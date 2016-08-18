@@ -149,7 +149,7 @@
 
   <property>
     <name>twill.java.reserved.memory.mb</name>
-    <value>250</value>
+    <value>${master.service.memory.mb}</value>
     <description>
       Reserved non-heap memory in megabytes for Apache Twill container
     </description>
@@ -571,7 +571,7 @@
 
   <property>
     <name>dataset.executor.container.memory.mb</name>
-    <value>512</value>
+    <value>${master.service.memory.mb}</value>
     <description>
       Size of Memory in megabytes for each dataset executor instance
     </description>
@@ -680,7 +680,7 @@
 
   <property>
     <name>explore.executor.container.memory.mb</name>
-    <value>1024</value>
+    <value>${master.service.memory.mb}</value>
     <description>
       Size of memory in megabytes for each explore executor instance
     </description>
@@ -942,8 +942,8 @@
   </property>
 
   <property>
-    <name>log.saver.run.memory.megs</name>
-    <value>1024</value>
+    <name>log.saver.run.memory.mb</name>
+    <value>${master.service.memory.mb}</value>
     <description>
       Memory in megabytes allocated for log saver instances to run in YARN
     </description>
@@ -1273,7 +1273,7 @@
 
   <property>
     <name>metrics.processor.memory.mb</name>
-    <value>512</value>
+    <value>${master.service.memory.mb}</value>
     <description>
       Size of memory in megabytes for metrics processor service Apache Twill
       runnable
@@ -1899,7 +1899,7 @@
 
   <property>
     <name>stream.container.memory.mb</name>
-    <value>512</value>
+    <value>${master.service.memory.mb}</value>
     <description>
       Amount of memory in megabytes for the YARN container that runs the
       stream handler
