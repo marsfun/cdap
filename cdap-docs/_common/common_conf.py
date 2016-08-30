@@ -38,11 +38,12 @@ node_js_max_version = 'v4.4.0'
 
 ###############################################################
 
-import sys
 import os
 import os.path
 import subprocess
+import sys
 from datetime import datetime
+
 
 def get_sdk_version():
     # Sets the Build Version

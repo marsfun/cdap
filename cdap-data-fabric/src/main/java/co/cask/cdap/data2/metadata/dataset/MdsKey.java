@@ -19,7 +19,6 @@ package co.cask.cdap.data2.metadata.dataset;
 import co.cask.cdap.data2.dataset2.lib.table.MDSKey;
 import co.cask.cdap.proto.Id;
 
-import java.util.Arrays;
 import javax.annotation.Nullable;
 
 /**

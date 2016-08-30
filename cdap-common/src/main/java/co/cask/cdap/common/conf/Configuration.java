@@ -20,7 +20,6 @@ import co.cask.cdap.api.annotation.Beta;
 import co.cask.cdap.common.utils.DirUtils;
 import com.google.common.base.Preconditions;
 import com.google.gson.stream.JsonWriter;
-import kafka.Kafka;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
