@@ -44,7 +44,6 @@ import subprocess
 import sys
 from datetime import datetime
 
-
 def get_sdk_version():
     # Sets the Build Version
     version = None
