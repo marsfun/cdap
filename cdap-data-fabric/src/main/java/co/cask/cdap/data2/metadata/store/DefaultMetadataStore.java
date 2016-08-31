@@ -384,9 +384,11 @@ public class DefaultMetadataStore implements MetadataStore {
     // Score results
     final Map<Id.NamespacedId, Integer> weightedResults = new HashMap<>();
     for (MetadataEntry metadataEntry : results) {
-      Integer score = weightedResults.get(metadataEntry.getTargetId());
-      score = score == null ? 0 : score;
-      weightedResults.put(metadataEntry.getTargetId(), score + 1);
+      if (metadataEntry != null) {
+        Integer score = weightedResults.get(metadataEntry.getTargetId());
+        score = score == null ? 0 : score;
+        weightedResults.put(metadataEntry.getTargetId(), score + 1);
+      }
     }
 
     // Sort the results by score
