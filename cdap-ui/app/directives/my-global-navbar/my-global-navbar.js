@@ -14,7 +14,7 @@
  * the License.
  */
 
-function NavbarController ($scope, $state, myNamespace, EventPipe, MYAUTH_EVENT, myAuth, MY_CONFIG, $cookies) {
+function NavbarController ($scope, $state, myNamespace, EventPipe, MYAUTH_EVENT, myAuth, MY_CONFIG, $cookies, myHelpers) {
   'ngInject';
 
   let vm = this;
@@ -22,7 +22,19 @@ function NavbarController ($scope, $state, myNamespace, EventPipe, MYAUTH_EVENT,
   vm.$cookies = $cookies;
 
   function findActiveProduct() {
-    if ($state.includes('hydratorplusplus.**')) {
+    var baseTag, baseUrl;
+    if ($state.is('userprofile')) {
+      baseTag = document.getElementsByTagName('base');
+      baseUrl = baseTag[0].getAttribute('href');
+      if (baseUrl.indexOf('hydrator') !== -1) {
+        return 'hydrator';
+      } else if (baseUrl.indexOf('tracker') !== -1) {
+        return 'tracker';
+      } else {
+        return 'cdap';
+      }
+    }
+    if ($state.includes('hydrator.**')) {
       return 'hydrator';
     } else if ($state.includes('tracker.**') || $state.is('tracker-enable')) {
       return 'tracker';
@@ -54,13 +66,13 @@ function NavbarController ($scope, $state, myNamespace, EventPipe, MYAUTH_EVENT,
   // Listening for event from namespace create or namespace delete
   EventPipe.on('namespace.update', updateNamespaceList);
 
-  vm.currentUser = myAuth.isAuthenticated();
+  vm.currentUser = myAuth.getUsername();
   $scope.$on (MYAUTH_EVENT.loginSuccess, () => {
-    vm.currentUser = myAuth.isAuthenticated();
+    vm.currentUser = myAuth.getUsername();
     updateNamespaceList();
   });
   $scope.$on (MYAUTH_EVENT.logoutSuccess, () => {
-    vm.currentUser = myAuth.isAuthenticated();
+    vm.currentUser = myAuth.getUsername();
     vm.namespaces = [];
   });
 
@@ -70,8 +82,8 @@ function NavbarController ($scope, $state, myNamespace, EventPipe, MYAUTH_EVENT,
 
     $cookies.put('CDAP_Namespace', ns.name);
 
-    if ($state.includes('hydratorplusplus.**')) {
-      $state.go('hydratorplusplus.list', { namespace: ns.name });
+    if ($state.includes('hydrator.**')) {
+      $state.go('hydrator.list', { namespace: ns.name });
     } else if ($state.includes('tracker.**') || $state.is('tracker-enable')) {
       $state.go('tracker.home', { namespace: ns.name });
     } else if ($state.includes('dashboard.**')){
@@ -81,7 +93,7 @@ function NavbarController ($scope, $state, myNamespace, EventPipe, MYAUTH_EVENT,
     }
   };
 
-
+  vm.getAbsUIUrl = myHelpers.getAbsUIUrl;
   $scope.$on('$destroy', () => {
     $cookies.remove('CDAP_Namespace');
   });

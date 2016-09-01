@@ -102,100 +102,6 @@ This table lists the **system** metadata annotations of CDAP entities:
      - * Schema (field names and types)
      - * View name
 
-.. _metadata-update-notifications:
-
-Metadata Update Notifications
-=============================
-.. topic::  **Note: Metadata Update Notifications Deprecated**
-
-    As of *CDAP v3.4.0*, *Metadata Update Notifications* have been deprecated, pending removal in a later
-    version. The :ref:`CDAP Audit Notifications <audit-logging>` contain notifications for metadata changes. Please change
-    all uses of *Metadata Update Notifications* to consume only those messages from the audit feed that have the
-    ``type`` field set to ``METADATA_CHANGE``.
-
-CDAP has the capability of publishing notifications to an external Apache Kafka instance
-upon metadata updates.
-
-This capability is controlled by these properties set in the ``cdap-site.xml``, as described in the
-:ref:`Administration Manual <appendix-cdap-site.xml>`:
-
-- ``metadata.updates.publish.enabled``: Determines if publishing of updates is enabled; defaults to ``false``;
-- ``metadata.updates.kafka.broker.list``: The Kafka broker list to publish to; and
-- ``metadata.updates.kafka.topic``: The Kafka topic to publish to; defaults to ``cdap-metadata-updates``.
-
-If ``metadata.updates.publish.enabled`` is *true*, then ``metadata.updates.kafka.broker.list`` **must** be defined.
-
-When enabled, upon every property or tag update, CDAP will publish a notification message
-to the configured Kafka instance. The contents of the message are a JSON representation of
-the `MetadataChangeRecord 
-<https://github.com/caskdata/cdap/blob/develop/cdap-proto/src/main/java/co/cask/cdap/proto/metadata/MetadataChangeRecord.java>`__ 
-class.
-
-Here is an example JSON message, pretty-printed::
-
-  {
-     "previous":{
-        "entityId":{
-           "type":"application",
-           "id":{
-              "namespace":{
-                 "id":"default"
-              },
-              "applicationId":"PurchaseHistory"
-           }
-        },
-        "scope":"USER",
-        "properties":{
-           "key2":"value2",
-           "key1":"value1"
-        },
-        "tags":[
-           "tag1",
-           "tag2"
-        ]
-     },
-     "changes":{
-        "additions":{
-           "entityId":{
-              "type":"application",
-              "id":{
-                 "namespace":{
-                    "id":"default"
-                 },
-                 "applicationId":"PurchaseHistory"
-              }
-           },
-           "scope":"USER",
-           "properties":{
-
-           },
-           "tags":[
-              "tag3"
-           ]
-        },
-        "deletions":{
-           "entityId":{
-              "type":"application",
-              "id":{
-                 "namespace":{
-                    "id":"default"
-                 },
-                 "applicationId":"PurchaseHistory"
-              }
-           },
-           "scope":"USER",
-           "properties":{
-
-           },
-           "tags":[
-
-           ]
-        }
-     },
-     "updateTime":1442883836781
-  }
-
-
 .. _metadata-navigator-integration:
 
 Cloudera Navigator Integration
@@ -212,12 +118,17 @@ Lineage
 |---| for a specified time range |---| all data access of the entity, and details of where
 that access originated from.
 
-For example: with a stream, writing to a stream may take place from a worker, which
-obtained the data from a combination of a dataset and a stream. The data in those entities
-comes from possibly other entities. The number of levels of the lineage that are
-calculated is set when a request is made to view the lineage of a particular entity.
+For example: with a stream, writing to a stream can take place from a worker, which may
+have obtained the data from a combination of a dataset and a (different) stream. The data
+in those entities can come from (possibly) other entities. The number of levels of the
+lineage that are calculated is set when a request is made to view the lineage of a
+particular entity.
 
 In the case of streams, the lineage includes whether the access was reading or writing to
-the stream. In the case of datasets, in this CDAP version, lineage can only indicate that
-dataset access took place, and does not provide indication if that access was for reading
-or writing. Later versions of CDAP will address this limitation.
+the stream. 
+
+In the case of datasets, lineage can indicate if a dataset access was for reading,
+writing, or both, if the methods in the dataset have appropriate :ref:`annotations
+<custom-datasets-access-annotations>`. If annotations are absent, lineage can only
+indicate that a dataset access took place, and does not provide indication if that access
+was for reading or writing.

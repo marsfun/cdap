@@ -686,15 +686,6 @@
   </property>
 
   <property>
-    <name>explore.executor.container.instances</name>
-    <value>1</value>
-    <description>
-      Number of explore executor instances (deprecated: instance count is
-      always set to 1)
-    </description>
-  </property>
-
-  <property>
     <name>explore.executor.container.memory.mb</name>
     <value>1024</value>
     <description>
@@ -707,15 +698,6 @@
     <value>1</value>
     <description>
       Number of virtual cores for each explore executor instance
-    </description>
-  </property>
-
-  <property>
-    <name>explore.executor.max.instances</name>
-    <value>1</value>
-    <description>
-      Maximum number of explore executor instances (deprecated: instance
-      count is always set to 1)
     </description>
   </property>
 
@@ -1123,36 +1105,6 @@
     </description>
   </property>
 
-  <property>
-    <name>metadata.updates.kafka.broker.list</name>
-    <value>127.0.0.1:${kafka.bind.port}</value>
-    <description>
-      Apache Kafka broker list to which metadata update notifications are
-      published (deprecated)
-    </description>
-  </property>
-
-  <property>
-    <name>metadata.updates.kafka.topic</name>
-    <value>cdap-metadata-updates</value>
-    <description>
-      Apache Kafka topic name to which metadata update notifications are
-      published (deprecated)
-    </description>
-  </property>
-
-  <property>
-    <name>metadata.updates.publish.enabled</name>
-    <value>false</value>
-    <description>
-      Determines if metadata updates will be published to Apache Kafka.
-      External systems can subscribe to the Kafka topic determined by
-      ${metadata.updates.kafka.topic} to receive notifications of metadata
-      updates (deprecated).
-    </description>
-  </property>
-
-
   <!-- Metrics Configuration -->
 
   <property>
@@ -1446,7 +1398,7 @@
 
   <property>
     <name>router.bind.port</name>
-    <value>10000</value>
+    <value>11015</value>
     <description>
       CDAP Router service bind port
     </description>
@@ -2026,7 +1978,7 @@
 
   <property>
     <name>dashboard.bind.port</name>
-    <value>9999</value>
+    <value>11011</value>
     <description>
       CDAP UI bind port
     </description>

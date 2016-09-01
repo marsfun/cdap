@@ -426,7 +426,7 @@ public final class Constants {
     /**
      * Defaults.
      */
-    public static final String DEFAULT_ROUTER_PORT = "10000";
+    public static final String DEFAULT_ROUTER_PORT = "11015";
 
     public static final String GATEWAY_DISCOVERY_NAME = Service.GATEWAY;
     public static final String WEBAPP_DISCOVERY_NAME = "webapp/$HOST";
@@ -818,14 +818,10 @@ public final class Constants {
     /** Twill Runnable configuration **/
     public static final String CONTAINER_VIRTUAL_CORES = "explore.executor.container.num.cores";
     public static final String CONTAINER_MEMORY_MB = "explore.executor.container.memory.mb";
-    public static final String CONTAINER_INSTANCES = "explore.executor.container.instances";
 
     public static final String LOCAL_DATA_DIR = "explore.local.data.dir";
     public static final String EXPLORE_ENABLED = "explore.enabled";
     public static final String WRITES_ENABLED = "explore.writes.enabled";
-
-    //max-instances of explore HTTP service
-    public static final String MAX_INSTANCES = "explore.executor.max.instances";
 
     public static final String ACTIVE_OPERATION_TIMEOUT_SECS = "explore.active.operation.timeout.secs";
     public static final String INACTIVE_OPERATION_TIMEOUT_SECS = "explore.inactive.operation.timeout.secs";
@@ -969,9 +965,6 @@ public final class Constants {
     public static final String SERVICE_WORKER_THREADS = "metadata.service.worker.threads";
     public static final String SERVICE_EXEC_THREADS = "metadata.service.exec.threads";
     public static final String HANDLERS_NAME = "metadata.handlers";
-    public static final String UPDATES_KAFKA_TOPIC = "metadata.updates.kafka.topic";
-    public static final String UPDATES_PUBLISH_ENABLED = "metadata.updates.publish.enabled";
-    public static final String UPDATES_KAFKA_BROKER_LIST = "metadata.updates.kafka.broker.list";
     public static final String MAX_CHARS_ALLOWED = "metadata.max.allowed.chars";
   }
 
