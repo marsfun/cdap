@@ -158,7 +158,8 @@ public class DefaultMetadataStore implements MetadataStore {
         input.addTags(namespacedId, tagsToAdd);
       }
     }, scope);
-    publishAudit(previousRef.get(), new MetadataRecord(namespacedId, scope, EMPTY_PROPERTIES, Sets.newHashSet(tagsToAdd)),
+    publishAudit(previousRef.get(), new MetadataRecord(namespacedId, scope, EMPTY_PROPERTIES,
+                                                       Sets.newHashSet(tagsToAdd)),
                  new MetadataRecord(namespacedId, scope));
   }
 
