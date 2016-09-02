@@ -219,7 +219,7 @@ public class DefaultMetadataAdmin implements MetadataAdmin {
   private void validateTagReservedKey(NamespacedId namespacedId, String key) throws InvalidMetadataException {
     if (MetadataDataset.TAGS_KEY.equals(key.toLowerCase())) {
       throw new InvalidMetadataException(namespacedId,
-                                  "Could not set metadata with reserved key " + MetadataDataset.TAGS_KEY);
+                                         "Could not set metadata with reserved key " + MetadataDataset.TAGS_KEY);
     }
   }
 

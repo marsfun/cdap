@@ -142,13 +142,14 @@ public class LineageAdmin {
 
     // TODO: Remove this once lineageStoreReader stops using deprecated Id class
     Set<NamespacedId> runEntities = new HashSet<>(
-      Collections2.transform(lineageStoreReader.getEntitiesForRun(run),
+      Collections2.transform(
+        lineageStoreReader.getEntitiesForRun(run),
         new Function<Id.NamespacedId, NamespacedId>() {
-         @Override
-         public NamespacedId apply(Id.NamespacedId namespacedId) {
+          @Override
+          public NamespacedId apply(Id.NamespacedId namespacedId) {
            return (NamespacedId) namespacedId.toEntityId();
-         }
-    }));
+          }
+      }));
 
     // No entities associated with the run, but run exists.
     if (runEntities.isEmpty()) {
