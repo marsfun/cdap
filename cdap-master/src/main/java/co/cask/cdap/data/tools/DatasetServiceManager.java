@@ -76,8 +76,7 @@ import java.util.concurrent.TimeUnit;
  * Note: This should not be used outside upgrade tool.
  */
 public class DatasetServiceManager extends AbstractIdleService {
-
-  private final CConfiguration cConf;
+  
   private final DatasetService datasetService;
   private final ZKClientService zkClientService;
   private final DatasetFramework datasetFramework;
@@ -87,7 +86,6 @@ public class DatasetServiceManager extends AbstractIdleService {
   @Inject
   DatasetServiceManager(CConfiguration cConf, Configuration hConf) {
     Injector injector = createInjector(cConf, hConf);
-    this.cConf = cConf;
     this.datasetService = injector.getInstance(DatasetService.class);
     this.zkClientService = injector.getInstance(ZKClientService.class);
     this.datasetFramework = injector.getInstance(DatasetFramework.class);
