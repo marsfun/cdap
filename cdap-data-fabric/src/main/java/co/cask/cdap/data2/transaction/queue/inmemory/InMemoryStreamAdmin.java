@@ -36,6 +36,7 @@ import co.cask.cdap.proto.ViewSpecification;
 import co.cask.cdap.proto.audit.AuditPayload;
 import co.cask.cdap.proto.audit.AuditType;
 import co.cask.cdap.proto.id.NamespaceId;
+import co.cask.cdap.proto.id.StreamId;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -85,7 +86,7 @@ public class InMemoryStreamAdmin extends InMemoryQueueAdmin implements StreamAdm
     queueService.resetStreamsWithPrefix(QueueName.prefixForNamedspacedStream(namespace.getId()));
     for (StreamSpecification spec : streamMetaStore.listStreams(namespace)) {
       // Remove metadata for the stream
-      metadataStore.removeMetadata(Id.Stream.from(namespace, spec.getName()).toEntityId());
+      metadataStore.removeMetadata(new StreamId(namespace.getId(), spec.getName()));
       streamMetaStore.removeStream(Id.Stream.from(namespace, spec.getName()));
     }
   }
