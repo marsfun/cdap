@@ -481,7 +481,7 @@ public class ArtifactRepository {
       ArtifactInfo artifactInfo = new ArtifactInfo(descriptor.getArtifactId(), artifactDetail.getMeta().getClasses(),
                                                    artifactDetail.getMeta().getProperties());
       // add system metadata for artifacts
-      writeSystemMetadata(artifactId, artifactInfo);
+      writeSystemMetadata(artifactId.toEntityId(), artifactInfo);
       return artifactDetail;
     } finally {
       parentClassLoader.close();
@@ -916,7 +916,7 @@ public class ArtifactRepository {
     }
   }
 
-  private void writeSystemMetadata(Id.Artifact artifactId, ArtifactInfo artifactInfo) {
+  private void writeSystemMetadata(co.cask.cdap.proto.id.ArtifactId artifactId, ArtifactInfo artifactInfo) {
     // add system metadata for artifacts
     ArtifactSystemMetadataWriter writer = new ArtifactSystemMetadataWriter(metadataStore, artifactId, artifactInfo);
     writer.write();

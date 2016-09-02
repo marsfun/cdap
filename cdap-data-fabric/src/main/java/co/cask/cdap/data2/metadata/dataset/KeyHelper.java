@@ -48,21 +48,21 @@ final class KeyHelper {
     } else if (type.equals(ApplicationId.class.getSimpleName())) {
       ApplicationId application = (ApplicationId) namespacedId;
       String namespaceId = application.getNamespace();
-      String instanceId = application.getApplication();
+      String appId = application.getApplication();
       builder.add(namespaceId);
-      builder.add(instanceId);
+      builder.add(appId);
     } else if (type.equals(DatasetId.class.getSimpleName())) {
       DatasetId datasetInstance = (DatasetId) namespacedId;
       String namespaceId = datasetInstance.getNamespace();
-      String instanceId = datasetInstance.getDataset();
+      String datasetId = datasetInstance.getDataset();
       builder.add(namespaceId);
-      builder.add(instanceId);
+      builder.add(datasetId);
     } else if (type.equals(StreamId.class.getSimpleName())) {
       StreamId stream = (StreamId) namespacedId;
       String namespaceId = stream.getNamespace();
-      String instanceId = stream.getStream();
+      String streamId = stream.getStream();
       builder.add(namespaceId);
-      builder.add(instanceId);
+      builder.add(streamId);
     } else if (type.equals(StreamViewId.class.getSimpleName())) {
       StreamViewId view = (StreamViewId) namespacedId;
       String namespaceId = view.getNamespace();
