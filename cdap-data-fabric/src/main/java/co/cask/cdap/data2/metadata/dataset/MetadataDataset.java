@@ -32,7 +32,7 @@ import co.cask.cdap.data2.metadata.indexer.Indexer;
 import co.cask.cdap.data2.metadata.indexer.SchemaIndexer;
 import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.codec.NamespacedIdCodec;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.metadata.MetadataSearchTargetType;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -68,7 +68,7 @@ import javax.annotation.Nullable;
 public class MetadataDataset extends AbstractDataset {
   private static final Logger LOG = LoggerFactory.getLogger(MetadataDataset.class);
   private static final Gson GSON = new GsonBuilder()
-    .registerTypeAdapter(NamespacedId.class, new NamespacedIdCodec())
+    .registerTypeAdapter(NamespacedEntityId.class, new NamespacedIdCodec())
     .create();
 
   private static final Pattern SPACE_SEPARATOR_PATTERN = Pattern.compile("\\s+");
@@ -105,26 +105,26 @@ public class MetadataDataset extends AbstractDataset {
    * @param indexer the indexer to use to create indexes for this {@link MetadataEntry}
    */
   private void setMetadata(MetadataEntry metadataEntry, @Nullable Indexer indexer) {
-    NamespacedId targetId = metadataEntry.getTargetId();
+    NamespacedEntityId targetId = metadataEntry.getTargetId();
 
     // Put to the default column.
     write(targetId, metadataEntry, indexer == null ? new DefaultValueIndexer() : indexer);
   }
 
   /**
-   * Sets a metadata property for the specified {@link NamespacedId}.
+   * Sets a metadata property for the specified {@link NamespacedEntityId}.
    *
    * @param targetId The target Id: {@link Id.Application} / {@link Id.Program} /
    *                 {@link Id.DatasetInstance}/{@link Id.Stream}
    * @param key The metadata key to be added
    * @param value The metadata value to be added
    */
-  public void setProperty(NamespacedId targetId, String key, String value) {
+  public void setProperty(NamespacedEntityId targetId, String key, String value) {
     setProperty(targetId, key, value, null);
   }
 
   /**
-   * Sets a metadata property for the specified {@link NamespacedId}.
+   * Sets a metadata property for the specified {@link NamespacedEntityId}.
    *
    * @param targetId The target Id: {@link Id.Application} / {@link Id.Program} /
    *                 {@link Id.DatasetInstance}/{@link Id.Stream}
@@ -132,30 +132,30 @@ public class MetadataDataset extends AbstractDataset {
    * @param value The metadata value to be added
    * @param indexer the indexer to use to create indexes for this key-value property
    */
-  public void setProperty(NamespacedId targetId, String key, String value, @Nullable Indexer indexer) {
+  public void setProperty(NamespacedEntityId targetId, String key, String value, @Nullable Indexer indexer) {
     setMetadata(new MetadataEntry(targetId, key, value), indexer);
   }
 
   /**
-   * Replaces existing tags of the specified {@link NamespacedId} with a new set of tags.
+   * Replaces existing tags of the specified {@link NamespacedEntityId} with a new set of tags.
    *
    * @param targetId The target Id: app-id(ns+app) / program-id(ns+app+pgtype+pgm) /
    *                 dataset-id(ns+dataset)/stream-id(ns+stream)
    * @param tags the tags to set
    */
-  private void setTags(NamespacedId targetId, String ... tags) {
+  private void setTags(NamespacedEntityId targetId, String ... tags) {
     MetadataEntry tagsEntry = new MetadataEntry(targetId, TAGS_KEY, Joiner.on(TAGS_SEPARATOR).join(tags));
     setMetadata(tagsEntry, null);
   }
 
   /**
-   * Adds a new tag for the specified {@link NamespacedId}.
+   * Adds a new tag for the specified {@link NamespacedEntityId}.
    *
    * @param targetId the target Id: app-id(ns+app) / program-id(ns+app+pgtype+pgm) /
    *                 dataset-id(ns+dataset)/stream-id(ns+stream).
    * @param tagsToAdd the tags to add
    */
-  public void addTags(NamespacedId targetId, String ... tagsToAdd) {
+  public void addTags(NamespacedEntityId targetId, String ... tagsToAdd) {
     Set<String> existingTags = getTags(targetId);
     Iterable<String> newTags = Iterables.concat(existingTags, Arrays.asList(tagsToAdd));
     MetadataEntry newTagsEntry = new MetadataEntry(targetId, TAGS_KEY, Joiner.on(TAGS_SEPARATOR).join(newTags));
@@ -170,7 +170,7 @@ public class MetadataDataset extends AbstractDataset {
    * @return instance of {@link MetadataEntry} for the target type, id, and key
    */
   @Nullable
-  private MetadataEntry getMetadata(NamespacedId targetId, String key) {
+  private MetadataEntry getMetadata(NamespacedEntityId targetId, String key) {
     MDSKey mdsKey = MdsKey.getMDSValueKey(targetId, key);
     Row row = indexedTable.get(mdsKey.getKey());
     if (row.isEmpty()) {
@@ -187,24 +187,24 @@ public class MetadataDataset extends AbstractDataset {
   }
 
   /**
-   * Retrieve the {@link MetadataEntry} corresponding to the specified key for the {@link NamespacedId}.
+   * Retrieve the {@link MetadataEntry} corresponding to the specified key for the {@link NamespacedEntityId}.
    *
-   * @param targetId the {@link NamespacedId} for which the {@link MetadataEntry} is to be retrieved
+   * @param targetId the {@link NamespacedEntityId} for which the {@link MetadataEntry} is to be retrieved
    * @param key the property key for which the {@link MetadataEntry} is to be retrieved
-   * @return the {@link MetadataEntry} corresponding to the specified key for the {@link NamespacedId}
+   * @return the {@link MetadataEntry} corresponding to the specified key for the {@link NamespacedEntityId}
    */
   @Nullable
-  public MetadataEntry getProperty(NamespacedId targetId, String key) {
+  public MetadataEntry getProperty(NamespacedEntityId targetId, String key) {
     return getMetadata(targetId, key);
   }
 
   /**
-   * Retrieves the metadata for the specified {@link NamespacedId}.
+   * Retrieves the metadata for the specified {@link NamespacedEntityId}.
    *
-   * @param targetId the specified {@link NamespacedId}
-   * @return a Map representing the metadata for the specified {@link NamespacedId}
+   * @param targetId the specified {@link NamespacedEntityId}
+   * @return a Map representing the metadata for the specified {@link NamespacedEntityId}
    */
-  private Map<String, String> getMetadata(NamespacedId targetId) {
+  private Map<String, String> getMetadata(NamespacedEntityId targetId) {
     String targetType = KeyHelper.getTargetType(targetId);
     MDSKey mdsKey = MdsKey.getMDSValueKey(targetId, null);
     byte[] startKey = mdsKey.getKey();
@@ -229,24 +229,24 @@ public class MetadataDataset extends AbstractDataset {
   }
 
   /**
-   * Retrieves all the properties for the specified {@link NamespacedId}.
+   * Retrieves all the properties for the specified {@link NamespacedEntityId}.
    *
-   * @param targetId the {@link NamespacedId} for which properties are to be retrieved
-   * @return the properties of the specified {@link NamespacedId}
+   * @param targetId the {@link NamespacedEntityId} for which properties are to be retrieved
+   * @return the properties of the specified {@link NamespacedEntityId}
    */
-  public Map<String, String> getProperties(NamespacedId targetId) {
+  public Map<String, String> getProperties(NamespacedEntityId targetId) {
     Map<String, String> properties = getMetadata(targetId);
     properties.remove(TAGS_KEY); // remove tags
     return properties;
   }
 
   /**
-   * Retrieves all the tags for the specified {@link NamespacedId}.
+   * Retrieves all the tags for the specified {@link NamespacedEntityId}.
    *
-   * @param targetId the {@link NamespacedId} for which tags are to be retrieved
-   * @return the tags of the specified {@link NamespacedId}
+   * @param targetId the {@link NamespacedEntityId} for which tags are to be retrieved
+   * @return the tags of the specified {@link NamespacedEntityId}
    */
-  public Set<String> getTags(NamespacedId targetId) {
+  public Set<String> getTags(NamespacedEntityId targetId) {
     MetadataEntry tags = getMetadata(targetId, TAGS_KEY);
     if (tags == null) {
       return new HashSet<>();
@@ -259,21 +259,21 @@ public class MetadataDataset extends AbstractDataset {
   }
 
   /**
-   * Removes all metadata for the specified {@link NamespacedId}.
+   * Removes all metadata for the specified {@link NamespacedEntityId}.
    *
-   * @param targetId the {@link NamespacedId} for which metadata is to be removed
+   * @param targetId the {@link NamespacedEntityId} for which metadata is to be removed
    */
-  private void removeMetadata(NamespacedId targetId) {
+  private void removeMetadata(NamespacedEntityId targetId) {
     removeMetadata(targetId, Predicates.<String>alwaysTrue());
   }
 
   /**
-   * Removes the specified keys from the metadata of the specified {@link NamespacedId}.
+   * Removes the specified keys from the metadata of the specified {@link NamespacedEntityId}.
    *
-   * @param targetId the {@link NamespacedId} for which the specified metadata keys are to be removed
-   * @param keys the keys to remove from the metadata of the specified {@link NamespacedId}
+   * @param targetId the {@link NamespacedEntityId} for which the specified metadata keys are to be removed
+   * @param keys the keys to remove from the metadata of the specified {@link NamespacedEntityId}
    */
-  private void removeMetadata(NamespacedId targetId, String ... keys) {
+  private void removeMetadata(NamespacedEntityId targetId, String ... keys) {
     final Set<String> keySet = Sets.newHashSet(keys);
     removeMetadata(targetId, new Predicate<String>() {
       @Override
@@ -284,12 +284,12 @@ public class MetadataDataset extends AbstractDataset {
   }
 
   /**
-   * Removes all keys that satisfy a given predicate from the metadata of the specified {@link NamespacedId}.
+   * Removes all keys that satisfy a given predicate from the metadata of the specified {@link NamespacedEntityId}.
    *
-   * @param targetId the {@link NamespacedId} for which keys are to be removed
+   * @param targetId the {@link NamespacedEntityId} for which keys are to be removed
    * @param filter the {@link Predicate} that should be satisfied to remove a key
    */
-  private void removeMetadata(NamespacedId targetId, Predicate<String> filter) {
+  private void removeMetadata(NamespacedEntityId targetId, Predicate<String> filter) {
     String targetType = KeyHelper.getTargetType(targetId);
     MDSKey mdsKey = MdsKey.getMDSValueKey(targetId, null);
     byte[] prefix = mdsKey.getKey();
@@ -327,10 +327,10 @@ public class MetadataDataset extends AbstractDataset {
   /**
    * Deletes all indexes associated with a metadata key
    *
-   * @param targetId the {@link NamespacedId} for which keys are to be removed
-   * @param metadataKey the key to remove from the metadata of the specified {@link NamespacedId}
+   * @param targetId the {@link NamespacedEntityId} for which keys are to be removed
+   * @param metadataKey the key to remove from the metadata of the specified {@link NamespacedEntityId}
    */
-  private void deleteIndexes(NamespacedId targetId, String metadataKey) {
+  private void deleteIndexes(NamespacedEntityId targetId, String metadataKey) {
     MDSKey mdsKey = MdsKey.getMDSIndexKey(targetId, metadataKey, null);
     byte[] startKey = mdsKey.getKey();
     byte[] stopKey = Bytes.stopKeyForPrefix(startKey);
@@ -349,20 +349,20 @@ public class MetadataDataset extends AbstractDataset {
   /**
    * Removes the specified keys from the metadata properties of an entity.
    *
-   * @param targetId the {@link NamespacedId} from which to remove the specified keys
+   * @param targetId the {@link NamespacedEntityId} from which to remove the specified keys
    * @param keys the keys to remove
    */
-  public void removeProperties(NamespacedId targetId, String ... keys) {
+  public void removeProperties(NamespacedEntityId targetId, String ... keys) {
     removeMetadata(targetId, keys);
   }
 
   /**
    * Removes the specified tags from the specified entity.
    *
-   * @param targetId the {@link NamespacedId} from which to remove the specified tags
+   * @param targetId the {@link NamespacedEntityId} from which to remove the specified tags
    * @param tagsToRemove the tags to remove
    */
-  public void removeTags(NamespacedId targetId, String... tagsToRemove) {
+  public void removeTags(NamespacedEntityId targetId, String... tagsToRemove) {
     Set<String> existingTags = getTags(targetId);
     if (existingTags.isEmpty()) {
       // nothing to remove
@@ -379,9 +379,9 @@ public class MetadataDataset extends AbstractDataset {
   /**
    * Removes all properties from the specified entity.
    *
-   * @param targetId the {@link NamespacedId} for which to remove the properties
+   * @param targetId the {@link NamespacedEntityId} for which to remove the properties
    */
-  public void removeProperties(NamespacedId targetId) {
+  public void removeProperties(NamespacedEntityId targetId) {
     removeMetadata(targetId,
                    new Predicate<String>() {
                      @Override
@@ -394,9 +394,9 @@ public class MetadataDataset extends AbstractDataset {
   /**
    * Removes all tags from the specified entity.
    *
-   * @param targetId the {@link NamespacedId} for which to remove the tags
+   * @param targetId the {@link NamespacedEntityId} for which to remove the tags
    */
-  public void removeTags(NamespacedId targetId) {
+  public void removeTags(NamespacedEntityId targetId) {
     removeMetadata(targetId,
                    new Predicate<String>() {
                      @Override
@@ -412,15 +412,15 @@ public class MetadataDataset extends AbstractDataset {
    * @param timeMillis time in milliseconds
    * @return the snapshot of the metadata for entities on or before the given time
    */
-  public Set<Metadata> getSnapshotBeforeTime(Set<NamespacedId> targetIds, long timeMillis) {
+  public Set<Metadata> getSnapshotBeforeTime(Set<NamespacedEntityId> targetIds, long timeMillis) {
     ImmutableSet.Builder<Metadata> builder = ImmutableSet.builder();
-    for (NamespacedId namespacedId : targetIds) {
-      builder.add(getSnapshotBeforeTime(namespacedId, timeMillis));
+    for (NamespacedEntityId namespacedEntityId : targetIds) {
+      builder.add(getSnapshotBeforeTime(namespacedEntityId, timeMillis));
     }
     return builder.build();
   }
 
-  private Metadata getSnapshotBeforeTime(NamespacedId targetId, long timeMillis) {
+  private Metadata getSnapshotBeforeTime(NamespacedEntityId targetId, long timeMillis) {
     byte[] scanStartKey = MdsHistoryKey.getMdsScanStartKey(targetId, timeMillis).getKey();
     byte[] scanEndKey = MdsHistoryKey.getMdsScanEndKey(targetId).getKey();
     // TODO: add limit to scan, we need only one row
@@ -440,13 +440,13 @@ public class MetadataDataset extends AbstractDataset {
    * @param targetIds entities for which metadata is required
    * @return map of entitiyId to set of metadata for that entity
    */
-  public Set<Metadata> getMetadata(Set<? extends NamespacedId> targetIds) {
+  public Set<Metadata> getMetadata(Set<? extends NamespacedEntityId> targetIds) {
     if (targetIds.isEmpty()) {
       return Collections.emptySet();
     }
 
     List<ImmutablePair<byte [], byte []>> fuzzyKeys = new ArrayList<>();
-    for (NamespacedId targetId : targetIds) {
+    for (NamespacedEntityId targetId : targetIds) {
       fuzzyKeys.add(getFuzzyKeyFor(targetId));
     }
 
@@ -455,7 +455,7 @@ public class MetadataDataset extends AbstractDataset {
 
     // Scan using fuzzy filter. Scan returns one row per property.
     // Group the rows on namespacedId
-    Multimap<NamespacedId, MetadataEntry> metadataMap = HashMultimap.create();
+    Multimap<NamespacedEntityId, MetadataEntry> metadataMap = HashMultimap.create();
     byte[] start = fuzzyKeys.get(0).getFirst();
     byte[] end = Bytes.stopKeyForPrefix(fuzzyKeys.get(fuzzyKeys.size() - 1).getFirst());
     Scanner scan = indexedTable.scan(new Scan(start, end, new FuzzyRowFilter(fuzzyKeys)));
@@ -473,7 +473,7 @@ public class MetadataDataset extends AbstractDataset {
 
     // Create metadata objects for each entity from grouped rows
     Set<Metadata> metadataSet = new HashSet<>();
-    for (Map.Entry<NamespacedId, Collection<MetadataEntry>> entry : metadataMap.asMap().entrySet()) {
+    for (Map.Entry<NamespacedEntityId, Collection<MetadataEntry>> entry : metadataMap.asMap().entrySet()) {
       Map<String, String> properties = new HashMap<>();
       Set<String> tags = Collections.emptySet();
       for (MetadataEntry metadataEntry : entry.getValue()) {
@@ -492,16 +492,16 @@ public class MetadataDataset extends AbstractDataset {
   private MetadataEntry convertRow(Row row) {
     byte[] rowKey = row.getRow();
     String targetType = MdsKey.getTargetType(rowKey);
-    NamespacedId namespacedId = MdsKey.getNamespacedIdFromKey(targetType, rowKey);
+    NamespacedEntityId namespacedEntityId = MdsKey.getNamespacedIdFromKey(targetType, rowKey);
     String key = MdsKey.getMetadataKey(targetType, rowKey);
     byte[] value = row.get(VALUE_COLUMN);
     if (key == null || value == null) {
       return null;
     }
-    return new MetadataEntry(namespacedId, key, Bytes.toString(value));
+    return new MetadataEntry(namespacedEntityId, key, Bytes.toString(value));
   }
 
-  private ImmutablePair<byte[], byte[]> getFuzzyKeyFor(NamespacedId targetId) {
+  private ImmutablePair<byte[], byte[]> getFuzzyKeyFor(NamespacedEntityId targetId) {
     // We need to create fuzzy pairs to match the first part of the key containing targetId
     MDSKey mdsKey = MdsKey.getMDSValueKey(targetId, null);
     byte[] keyBytes = mdsKey.getKey();
@@ -555,7 +555,7 @@ public class MetadataDataset extends AbstractDataset {
             continue;
           }
 
-          NamespacedId targetId = MdsKey.getNamespacedIdFromKey(targetType, rowKey);
+          NamespacedEntityId targetId = MdsKey.getNamespacedIdFromKey(targetType, rowKey);
           String key = MdsKey.getMetadataKey(targetType, rowKey);
           MetadataEntry entry = getMetadata(targetId, key);
           results.add(entry);
@@ -600,7 +600,7 @@ public class MetadataDataset extends AbstractDataset {
     return searchTerms;
   }
 
-  private void write(NamespacedId targetId, MetadataEntry entry, Indexer indexer) {
+  private void write(NamespacedEntityId targetId, MetadataEntry entry, Indexer indexer) {
     String key = entry.getKey();
     MDSKey mdsValueKey = MdsKey.getMDSValueKey(targetId, key);
     Put put = new Put(mdsValueKey.getKey());
@@ -615,11 +615,11 @@ public class MetadataDataset extends AbstractDataset {
   /**
    * Store indexes for a {@link MetadataEntry}
    *
-   * @param targetId the {@link NamespacedId} from which the metadata indexes has to be stored
+   * @param targetId the {@link NamespacedEntityId} from which the metadata indexes has to be stored
    * @param metadataKey the metadata key for which the indexes are to be stored
    * @param indexes {@link Set<String>} of indexes to store for this {@link MetadataEntry}
    */
-  private void storeIndexes(NamespacedId targetId, String metadataKey, Set<String> indexes) {
+  private void storeIndexes(NamespacedEntityId targetId, String metadataKey, Set<String> indexes) {
     // Delete existing indexes for targetId-key
     deleteIndexes(targetId, metadataKey);
 
@@ -634,12 +634,12 @@ public class MetadataDataset extends AbstractDataset {
   /**
    * Creates a {@link Put} for the a metadata index
    *
-   * @param targetId the {@link NamespacedId} from which the metadata index has to be created
+   * @param targetId the {@link NamespacedEntityId} from which the metadata index has to be created
    * @param metadataKey the key of the metadata entry
    * @param index the index for this metadata
    * @return {@link Put} which is a index row with the value to be indexed in the {@link #INDEX_COLUMN}
    */
-  private Put getIndexPut(NamespacedId targetId, String metadataKey, String index) {
+  private Put getIndexPut(NamespacedEntityId targetId, String metadataKey, String index) {
     MDSKey mdsIndexKey = MdsKey.getMDSIndexKey(targetId, metadataKey, index.toLowerCase());
     String namespacedIndex = MdsKey.getNamespaceId(mdsIndexKey) + KEYVALUE_SEPARATOR + index.toLowerCase();
     Put put = new Put(mdsIndexKey.getKey());
@@ -651,7 +651,7 @@ public class MetadataDataset extends AbstractDataset {
    * Snapshots the metadata for the given targetId at the given time.
    * @param targetId target id for which metadata needs snapshotting
    */
-  private void writeHistory(NamespacedId targetId) {
+  private void writeHistory(NamespacedEntityId targetId) {
     Map<String, String> properties = getProperties(targetId);
     Set<String> tags = getTags(targetId);
     Metadata metadata = new Metadata(targetId, properties, tags);
@@ -679,18 +679,18 @@ public class MetadataDataset extends AbstractDataset {
       while ((limit > 0) && (row = scanner.next()) != null) {
         byte[] rowKey = row.getRow();
         String targetType = MdsKey.getTargetType(rowKey);
-        NamespacedId namespacedId = MdsKey.getNamespacedIdFromKey(targetType, rowKey);
+        NamespacedEntityId namespacedEntityId = MdsKey.getNamespacedIdFromKey(targetType, rowKey);
         String metadataKey = MdsKey.getMetadataKey(targetType, rowKey);
         Indexer indexer = getIndexerForKey(metadataKey);
-        MetadataEntry metadataEntry = getMetadata(namespacedId, metadataKey);
+        MetadataEntry metadataEntry = getMetadata(namespacedEntityId, metadataKey);
         if (metadataEntry == null) {
           LOG.warn("Found null metadata entry for a known metadata key {} for entity {} which has an index stored. " +
-                     "Ignoring.", metadataKey, namespacedId);
+                     "Ignoring.", metadataKey, namespacedEntityId);
           continue;
         }
         Set<String> indexes = indexer.getIndexes(metadataEntry);
         // storeIndexes deletes old indexes
-        storeIndexes(namespacedId, metadataKey, indexes);
+        storeIndexes(namespacedEntityId, metadataKey, indexes);
         limit--;
       }
       Row startRowForNextBatch = scanner.next();

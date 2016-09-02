@@ -20,11 +20,16 @@ import co.cask.cdap.proto.element.EntityType;
 /**
  * An {@link EntityId} which belongs to a namespace.
  */
-public abstract class NamespacedId extends EntityId {
+public abstract class NamespacedEntityId extends EntityId {
 
-  protected NamespacedId(EntityType entity) {
+  protected final String namespace;
+
+  protected NamespacedEntityId(EntityType entity, String namespace) {
     super(entity);
+    this.namespace = namespace;
   }
 
-  public abstract String getNamespace();
+  public String getNamespace() {
+    return namespace;
+  }
 }

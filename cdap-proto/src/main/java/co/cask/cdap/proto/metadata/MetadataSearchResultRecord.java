@@ -16,7 +16,7 @@
 package co.cask.cdap.proto.metadata;
 
 import co.cask.cdap.api.annotation.Beta;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 
 import java.util.Collections;
 import java.util.Map;
@@ -27,21 +27,21 @@ import java.util.Objects;
  */
 @Beta
 public class MetadataSearchResultRecord {
-  private final NamespacedId namespacedId;
+  private final NamespacedEntityId namespacedEntityId;
   private final Map<MetadataScope, Metadata> metadata;
 
-  public MetadataSearchResultRecord(NamespacedId namespacedId) {
-    this.namespacedId = namespacedId;
+  public MetadataSearchResultRecord(NamespacedEntityId namespacedEntityId) {
+    this.namespacedEntityId = namespacedEntityId;
     this.metadata = Collections.emptyMap();
   }
 
-  public MetadataSearchResultRecord(NamespacedId namespacedId, Map<MetadataScope, Metadata> metadata) {
-    this.namespacedId = namespacedId;
+  public MetadataSearchResultRecord(NamespacedEntityId namespacedEntityId, Map<MetadataScope, Metadata> metadata) {
+    this.namespacedEntityId = namespacedEntityId;
     this.metadata = metadata;
   }
 
-  public NamespacedId getEntityId() {
-    return namespacedId;
+  public NamespacedEntityId getEntityId() {
+    return namespacedEntityId;
   }
 
   public Map<MetadataScope, Metadata> getMetadata() {
@@ -57,19 +57,19 @@ public class MetadataSearchResultRecord {
       return false;
     }
     MetadataSearchResultRecord that = (MetadataSearchResultRecord) o;
-    return Objects.equals(namespacedId, that.namespacedId) &&
+    return Objects.equals(namespacedEntityId, that.namespacedEntityId) &&
       Objects.equals(metadata, that.metadata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(namespacedId, metadata);
+    return Objects.hash(namespacedEntityId, metadata);
   }
 
   @Override
   public String toString() {
     return "MetadataSearchResultRecord{" +
-      "namespacedId=" + namespacedId +
+      "namespacedEntityId=" + namespacedEntityId +
       ", metadata=" + metadata +
       '}';
   }

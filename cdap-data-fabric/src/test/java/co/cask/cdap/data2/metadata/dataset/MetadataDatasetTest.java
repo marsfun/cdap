@@ -24,7 +24,7 @@ import co.cask.cdap.proto.ProgramType;
 import co.cask.cdap.proto.id.ApplicationId;
 import co.cask.cdap.proto.id.DatasetId;
 import co.cask.cdap.proto.id.NamespaceId;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
 import co.cask.cdap.proto.id.StreamViewId;
@@ -487,7 +487,7 @@ public class MetadataDatasetTest {
 
   @Test
   public void testMultiGet() throws Exception {
-    Map<NamespacedId, Metadata> allMetadata = new HashMap<>();
+    Map<NamespacedEntityId, Metadata> allMetadata = new HashMap<>();
     allMetadata.put(flow1, new Metadata(flow1,
                                         ImmutableMap.of("key1", "value1", "key2", "value2"),
                                         ImmutableSet.of("tag1", "tag2", "tag3")));
@@ -507,7 +507,7 @@ public class MetadataDatasetTest {
                                         ImmutableMap.of("key50", "value50", "key51", "value51"),
                                         ImmutableSet.of("tag51")));
 
-    for (Map.Entry<NamespacedId, Metadata> entry : allMetadata.entrySet()) {
+    for (Map.Entry<NamespacedEntityId, Metadata> entry : allMetadata.entrySet()) {
       Metadata metadata = entry.getValue();
       for (Map.Entry<String, String> props : metadata.getProperties().entrySet()) {
         dataset.setProperty(metadata.getEntityId(), props.getKey(), props.getValue());
@@ -538,7 +538,7 @@ public class MetadataDatasetTest {
     Assert.assertEquals(expected, dataset.getMetadata(ImmutableSet.of(artifact1)));
 
     expected = ImmutableSet.of();
-    Assert.assertEquals(expected, dataset.getMetadata(ImmutableSet.<NamespacedId>of()));
+    Assert.assertEquals(expected, dataset.getMetadata(ImmutableSet.<NamespacedEntityId>of()));
   }
 
   @Test
@@ -650,7 +650,7 @@ public class MetadataDatasetTest {
     Assert.assertEquals(0, dataset.deleteAllIndexes(1));
   }
 
-  private void doTestHistory(MetadataDataset dataset, NamespacedId targetId, String prefix)
+  private void doTestHistory(MetadataDataset dataset, NamespacedEntityId targetId, String prefix)
     throws Exception {
     // Metadata change history keyed by time in millis the change was made
     Map<Long, Metadata> expected = new HashMap<>();

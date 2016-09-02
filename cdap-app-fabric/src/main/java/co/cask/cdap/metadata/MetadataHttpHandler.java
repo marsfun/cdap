@@ -23,7 +23,7 @@ import co.cask.cdap.proto.codec.NamespacedIdCodec;
 import co.cask.cdap.proto.id.ApplicationId;
 import co.cask.cdap.proto.id.ArtifactId;
 import co.cask.cdap.proto.id.DatasetId;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
 import co.cask.cdap.proto.id.StreamViewId;
@@ -69,7 +69,7 @@ import javax.ws.rs.QueryParam;
 @Path(Constants.Gateway.API_VERSION_3)
 public class MetadataHttpHandler extends AbstractHttpHandler {
   private static final Gson GSON = new GsonBuilder()
-    .registerTypeAdapter(NamespacedId.class, new NamespacedIdCodec())
+    .registerTypeAdapter(NamespacedEntityId.class, new NamespacedIdCodec())
     .create();
   private static final Type MAP_STRING_STRING_TYPE = new TypeToken<Map<String, String>>() { }.getType();
   private static final Type LIST_STRING_TYPE = new TypeToken<List<String>>() { }.getType();
@@ -848,24 +848,24 @@ public class MetadataHttpHandler extends AbstractHttpHandler {
     responder.sendJson(HttpResponseStatus.OK, results, SET_METADATA_SEARCH_RESULT_TYPE, GSON);
   }
 
-  private Set<MetadataRecord> getMetadata(NamespacedId namespacedId,
+  private Set<MetadataRecord> getMetadata(NamespacedEntityId namespacedEntityId,
                                           @Nullable String scope) throws NotFoundException, BadRequestException {
     return  (scope == null) ?
-      metadataAdmin.getMetadata(namespacedId) :
-      metadataAdmin.getMetadata(validateScope(scope), namespacedId);
+      metadataAdmin.getMetadata(namespacedEntityId) :
+      metadataAdmin.getMetadata(validateScope(scope), namespacedEntityId);
   }
 
-  private Map<String, String> getProperties(NamespacedId namespacedId,
+  private Map<String, String> getProperties(NamespacedEntityId namespacedEntityId,
                                             @Nullable String scope) throws NotFoundException, BadRequestException {
-    return  (scope == null) ? metadataAdmin.getProperties(namespacedId) :
-      metadataAdmin.getProperties(validateScope(scope), namespacedId);
+    return  (scope == null) ? metadataAdmin.getProperties(namespacedEntityId) :
+      metadataAdmin.getProperties(validateScope(scope), namespacedEntityId);
   }
 
-  private Set<String> getTags(NamespacedId namespacedId,
+  private Set<String> getTags(NamespacedEntityId namespacedEntityId,
                               @Nullable String scope) throws NotFoundException, BadRequestException {
     return  (scope == null) ?
-      metadataAdmin.getTags(namespacedId) :
-      metadataAdmin.getTags(validateScope(scope), namespacedId);
+      metadataAdmin.getTags(namespacedEntityId) :
+      metadataAdmin.getTags(validateScope(scope), namespacedEntityId);
   }
 
   private MetadataScope validateScope(String scope) throws BadRequestException {

@@ -27,7 +27,7 @@ import co.cask.cdap.data2.metadata.lineage.LineageStoreReader;
 import co.cask.cdap.data2.metadata.lineage.Relation;
 import co.cask.cdap.data2.metadata.store.MetadataStore;
 import co.cask.cdap.proto.Id;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.metadata.MetadataRecord;
 import co.cask.cdap.proto.metadata.MetadataScope;
 import com.google.common.annotations.VisibleForTesting;
@@ -141,13 +141,13 @@ public class LineageAdmin {
     entityExistenceVerifier.ensureExists(run.toEntityId());
 
     // TODO: Remove this once lineageStoreReader stops using deprecated Id class
-    Set<NamespacedId> runEntities = new HashSet<>(
+    Set<NamespacedEntityId> runEntities = new HashSet<>(
       Collections2.transform(
         lineageStoreReader.getEntitiesForRun(run),
-        new Function<Id.NamespacedId, NamespacedId>() {
+        new Function<Id.NamespacedId, NamespacedEntityId>() {
           @Override
-          public NamespacedId apply(Id.NamespacedId namespacedId) {
-           return (NamespacedId) namespacedId.toEntityId();
+          public NamespacedEntityId apply(Id.NamespacedId namespacedId) {
+           return (NamespacedEntityId) namespacedId.toEntityId();
           }
       }));
 

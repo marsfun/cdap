@@ -18,7 +18,7 @@ package co.cask.cdap.data2.metadata.dataset;
 
 import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.data2.dataset2.lib.table.MDSKey;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 
 /**
  * Key used to store metadata history.
@@ -26,7 +26,7 @@ import co.cask.cdap.proto.id.NamespacedId;
 public class MdsHistoryKey {
   private static final byte[] ROW_PREFIX = {'h'};
 
-  public static MDSKey getMdsKey(NamespacedId targetId, long time) {
+  public static MDSKey getMdsKey(NamespacedEntityId targetId, long time) {
     MDSKey.Builder builder = new MDSKey.Builder();
     builder.add(ROW_PREFIX);
     KeyHelper.addTargetIdToKey(builder, targetId);
@@ -34,11 +34,11 @@ public class MdsHistoryKey {
     return builder.build();
   }
 
-  public static MDSKey getMdsScanStartKey(NamespacedId targetId, long time) {
+  public static MDSKey getMdsScanStartKey(NamespacedEntityId targetId, long time) {
     return getMdsKey(targetId, time);
   }
 
-  public static MDSKey getMdsScanEndKey(NamespacedId targetId) {
+  public static MDSKey getMdsScanEndKey(NamespacedEntityId targetId) {
     MDSKey.Builder builder = new MDSKey.Builder();
     builder.add(ROW_PREFIX);
     KeyHelper.addTargetIdToKey(builder, targetId);

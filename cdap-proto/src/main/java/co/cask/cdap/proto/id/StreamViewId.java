@@ -26,21 +26,15 @@ import java.util.Objects;
 /**
  * Uniquely identifies a stream view.
  */
-public class StreamViewId extends NamespacedId implements ParentedId<StreamId> {
-  private final String namespace;
+public class StreamViewId extends NamespacedEntityId implements ParentedId<StreamId> {
   private final String stream;
   private final String view;
   private transient Integer hashCode;
 
   public StreamViewId(String namespace, String stream, String view) {
-    super(EntityType.STREAM_VIEW);
-    this.namespace = namespace;
+    super(EntityType.STREAM_VIEW, namespace);
     this.stream = stream;
     this.view = view;
-  }
-
-  public String getNamespace() {
-    return namespace;
   }
 
   public String getStream() {

@@ -21,7 +21,7 @@ import co.cask.cdap.proto.ProgramType;
 import co.cask.cdap.proto.id.ApplicationId;
 import co.cask.cdap.proto.id.ArtifactId;
 import co.cask.cdap.proto.id.DatasetId;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
 import co.cask.cdap.proto.id.StreamViewId;
@@ -32,10 +32,10 @@ import co.cask.cdap.proto.id.StreamViewId;
 // Note: these methods were refactored from MetadataDataset class. Once CDAP-3657 is fixed, these methods will need
 // to be cleaned up CDAP-4291
 final class KeyHelper {
-  static void addTargetIdToKey(MDSKey.Builder builder, NamespacedId namespacedId) {
-    String type = getTargetType(namespacedId);
+  static void addTargetIdToKey(MDSKey.Builder builder, NamespacedEntityId namespacedEntityId) {
+    String type = getTargetType(namespacedEntityId);
     if (type.equals(ProgramId.class.getSimpleName())) {
-      ProgramId program = (ProgramId) namespacedId;
+      ProgramId program = (ProgramId) namespacedEntityId;
       String namespaceId = program.getNamespace();
       String appId = program.getApplication();
       String programType = program.getType().name();
@@ -45,25 +45,25 @@ final class KeyHelper {
       builder.add(programType);
       builder.add(programId);
     } else if (type.equals(ApplicationId.class.getSimpleName())) {
-      ApplicationId application = (ApplicationId) namespacedId;
+      ApplicationId application = (ApplicationId) namespacedEntityId;
       String namespaceId = application.getNamespace();
       String appId = application.getApplication();
       builder.add(namespaceId);
       builder.add(appId);
     } else if (type.equals(DatasetId.class.getSimpleName())) {
-      DatasetId datasetInstance = (DatasetId) namespacedId;
+      DatasetId datasetInstance = (DatasetId) namespacedEntityId;
       String namespaceId = datasetInstance.getNamespace();
       String datasetId = datasetInstance.getDataset();
       builder.add(namespaceId);
       builder.add(datasetId);
     } else if (type.equals(StreamId.class.getSimpleName())) {
-      StreamId stream = (StreamId) namespacedId;
+      StreamId stream = (StreamId) namespacedEntityId;
       String namespaceId = stream.getNamespace();
       String streamId = stream.getStream();
       builder.add(namespaceId);
       builder.add(streamId);
     } else if (type.equals(StreamViewId.class.getSimpleName())) {
-      StreamViewId view = (StreamViewId) namespacedId;
+      StreamViewId view = (StreamViewId) namespacedEntityId;
       String namespaceId = view.getNamespace();
       String streamId = view.getStream();
       String viewId = view.getView();
@@ -71,7 +71,7 @@ final class KeyHelper {
       builder.add(streamId);
       builder.add(viewId);
     } else if (type.equals(ArtifactId.class.getSimpleName())) {
-      ArtifactId artifactId = (ArtifactId) namespacedId;
+      ArtifactId artifactId = (ArtifactId) namespacedEntityId;
       String namespaceId = artifactId.getNamespace();
       String name = artifactId.getArtifact();
       String version = artifactId.getVersion();
@@ -83,7 +83,7 @@ final class KeyHelper {
     }
   }
 
-  static NamespacedId getTargetIdIdFromKey(MDSKey.Splitter keySplitter, String type) {
+  static NamespacedEntityId getTargetIdIdFromKey(MDSKey.Splitter keySplitter, String type) {
     if (type.equals(ProgramId.class.getSimpleName())) {
       String namespaceId = keySplitter.getString();
       String appId = keySplitter.getString();
@@ -116,11 +116,11 @@ final class KeyHelper {
     throw new IllegalArgumentException("Illegal Type " + type + " of metadata source.");
   }
 
-  static String getTargetType(NamespacedId namespacedId) {
-    if (namespacedId instanceof ProgramId) {
+  static String getTargetType(NamespacedEntityId namespacedEntityId) {
+    if (namespacedEntityId instanceof ProgramId) {
       return ProgramId.class.getSimpleName();
     }
-    return namespacedId.getClass().getSimpleName();
+    return namespacedEntityId.getClass().getSimpleName();
   }
 
   private KeyHelper() {

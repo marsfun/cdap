@@ -32,7 +32,7 @@ import co.cask.cdap.proto.audit.payload.metadata.MetadataPayload;
 import co.cask.cdap.proto.id.ApplicationId;
 import co.cask.cdap.proto.id.DatasetId;
 import co.cask.cdap.proto.id.NamespaceId;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
 import co.cask.cdap.proto.metadata.Metadata;
@@ -221,9 +221,9 @@ public class MetadataStoreTest {
     List<AuditMessage> actualAuditMessages = new ArrayList<>();
     for (AuditMessage auditMessage : auditPublisher.popMessages()) {
       // Ignore system audit messages
-      if (auditMessage.getEntityId() instanceof NamespacedId) {
+      if (auditMessage.getEntityId() instanceof NamespacedEntityId) {
         String systemNs = NamespaceId.SYSTEM.getNamespace();
-        if (!((NamespacedId) auditMessage.getEntityId()).getNamespace().equals(systemNs)) {
+        if (!((NamespacedEntityId) auditMessage.getEntityId()).getNamespace().equals(systemNs)) {
           actualAuditMessages.add(auditMessage);
         }
       }

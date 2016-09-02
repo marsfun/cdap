@@ -15,21 +15,21 @@
  */
 package co.cask.cdap.common;
 
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 
 /**
  * Base exception for Metadata validation.
  */
 public class InvalidMetadataException extends BadRequestException {
 
-  private final NamespacedId targetId;
+  private final NamespacedEntityId targetId;
 
-  public InvalidMetadataException(NamespacedId targetId, String message) {
+  public InvalidMetadataException(NamespacedEntityId targetId, String message) {
     super("Unable to set metadata for " + targetId + " with error: " + message);
     this.targetId = targetId;
   }
 
-  public NamespacedId getTargetId() {
+  public NamespacedEntityId getTargetId() {
     return targetId;
   }
 }

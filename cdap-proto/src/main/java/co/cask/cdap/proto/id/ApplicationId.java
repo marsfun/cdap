@@ -27,19 +27,13 @@ import java.util.Objects;
 /**
  * Uniquely identifies an application.
  */
-public class ApplicationId extends NamespacedId implements ParentedId<NamespaceId> {
-  private final String namespace;
+public class ApplicationId extends NamespacedEntityId implements ParentedId<NamespaceId> {
   private final String application;
   private transient Integer hashCode;
 
   public ApplicationId(String namespace, String application) {
-    super(EntityType.APPLICATION);
-    this.namespace = namespace;
+    super(EntityType.APPLICATION, namespace);
     this.application = application;
-  }
-
-  public String getNamespace() {
-    return namespace;
   }
 
   public String getApplication() {

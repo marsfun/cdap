@@ -18,7 +18,7 @@ package co.cask.cdap.metadata;
 
 import co.cask.cdap.common.InvalidMetadataException;
 import co.cask.cdap.common.NotFoundException;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.metadata.MetadataRecord;
 import co.cask.cdap.proto.metadata.MetadataScope;
 import co.cask.cdap.proto.metadata.MetadataSearchResultRecord;
@@ -37,117 +37,117 @@ import java.util.Set;
 public interface MetadataAdmin {
 
   /**
-   * Adds the specified {@link Map} to the metadata of the specified {@link NamespacedId namespacedId}.
+   * Adds the specified {@link Map} to the metadata of the specified {@link NamespacedEntityId namespacedEntityId}.
    * Existing keys are updated with new values, newer keys are appended to the metadata. This API only supports adding
    * properties in {@link MetadataScope#USER}.
    *
    * @throws NotFoundException if the specified entity was not found
    * @throws InvalidMetadataException if some of the properties violate metadata validation rules
    */
-  void addProperties(NamespacedId namespacedId, Map<String, String> properties)
+  void addProperties(NamespacedEntityId namespacedEntityId, Map<String, String> properties)
     throws NotFoundException, InvalidMetadataException;
 
   /**
-   * Adds the specified tags to specified {@link NamespacedId}. This API only supports adding tags in
+   * Adds the specified tags to specified {@link NamespacedEntityId}. This API only supports adding tags in
    * {@link MetadataScope#USER}.
    *
    * @throws NotFoundException if the specified entity was not found
    * @throws InvalidMetadataException if some of the properties violate metadata validation rules
    */
-  void addTags(NamespacedId namespacedId, String... tags) throws NotFoundException, InvalidMetadataException;
+  void addTags(NamespacedEntityId namespacedEntityId, String... tags) throws NotFoundException, InvalidMetadataException;
 
   /**
    * Returns a set of {@link MetadataRecord} representing all metadata (including properties and tags) for the specified
-   * {@link NamespacedId} in both {@link MetadataScope#USER} and {@link MetadataScope#SYSTEM}.
+   * {@link NamespacedEntityId} in both {@link MetadataScope#USER} and {@link MetadataScope#SYSTEM}.
    *
    * @throws NotFoundException if the specified entity was not found
    */
-  Set<MetadataRecord> getMetadata(NamespacedId namespacedId) throws NotFoundException;
+  Set<MetadataRecord> getMetadata(NamespacedEntityId namespacedEntityId) throws NotFoundException;
 
   /**
    * Returns a set of {@link MetadataRecord} representing all metadata (including properties and tags) for the specified
-   * {@link NamespacedId} in the specified {@link MetadataScope}.
+   * {@link NamespacedEntityId} in the specified {@link MetadataScope}.
    *
    * @throws NotFoundException if the specified entity was not found
    */
   // TODO: Should this return a single metadata record instead or is a set of one record ok?
-  Set<MetadataRecord> getMetadata(MetadataScope scope, NamespacedId namespacedId) throws NotFoundException;
+  Set<MetadataRecord> getMetadata(MetadataScope scope, NamespacedEntityId namespacedEntityId) throws NotFoundException;
 
   /**
-   * @return a {@link Map} representing the metadata of the specified {@link NamespacedId} in both
+   * @return a {@link Map} representing the metadata of the specified {@link NamespacedEntityId} in both
    * {@link MetadataScope#USER} and {@link MetadataScope#SYSTEM}
    * @throws NotFoundException if the specified entity was not found
    */
   // TODO: This should perhaps return a Map<MetadataScope, Map<String, String>>
-  Map<String, String> getProperties(NamespacedId namespacedId) throws NotFoundException;
+  Map<String, String> getProperties(NamespacedEntityId namespacedEntityId) throws NotFoundException;
 
   /**
-   * @return a {@link Map} representing the metadata of the specified {@link NamespacedId} in the specified
+   * @return a {@link Map} representing the metadata of the specified {@link NamespacedEntityId} in the specified
    * {@link MetadataScope}
    * @throws NotFoundException if the specified entity was not found
    */
-  Map<String, String> getProperties(MetadataScope scope, NamespacedId namespacedId) throws NotFoundException;
+  Map<String, String> getProperties(MetadataScope scope, NamespacedEntityId namespacedEntityId) throws NotFoundException;
 
   /**
-   * @return all the tags for the specified {@link NamespacedId} in both {@link MetadataScope#USER} and
+   * @return all the tags for the specified {@link NamespacedEntityId} in both {@link MetadataScope#USER} and
    * {@link MetadataScope#SYSTEM}
    * @throws NotFoundException if the specified entity was not found
    */
   // TODO: This should perhaps return a Map<MetadataScope, Set<String>>
-  Set<String> getTags(NamespacedId namespacedId) throws NotFoundException;
+  Set<String> getTags(NamespacedEntityId namespacedEntityId) throws NotFoundException;
 
   /**
-   * @return all the tags for the specified {@link NamespacedId} in the specified {@link MetadataScope}
+   * @return all the tags for the specified {@link NamespacedEntityId} in the specified {@link MetadataScope}
    * @throws NotFoundException if the specified entity was not found
    */
-  Set<String> getTags(MetadataScope scope, NamespacedId namespacedId) throws NotFoundException;
+  Set<String> getTags(MetadataScope scope, NamespacedEntityId namespacedEntityId) throws NotFoundException;
 
   /**
-   * Removes all the metadata (including properties and tags) for the specified {@link NamespacedId}. This
+   * Removes all the metadata (including properties and tags) for the specified {@link NamespacedEntityId}. This
    * API only supports removing metadata in {@link MetadataScope#USER}.
    *
-   * @param namespacedId the {@link NamespacedId} to remove metadata for
+   * @param namespacedEntityId the {@link NamespacedEntityId} to remove metadata for
    * @throws NotFoundException if the specified entity was not found
    */
-  void removeMetadata(NamespacedId namespacedId) throws NotFoundException;
+  void removeMetadata(NamespacedEntityId namespacedEntityId) throws NotFoundException;
 
   /**
-   * Removes all properties from the metadata of the specified {@link NamespacedId}. This API only supports
+   * Removes all properties from the metadata of the specified {@link NamespacedEntityId}. This API only supports
    * removing properties in {@link MetadataScope#USER}.
    *
-   * @param namespacedId the {@link NamespacedId} to remove properties for
+   * @param namespacedEntityId the {@link NamespacedEntityId} to remove properties for
    * @throws NotFoundException if the specified entity was not found
    */
-  void removeProperties(NamespacedId namespacedId) throws NotFoundException;
+  void removeProperties(NamespacedEntityId namespacedEntityId) throws NotFoundException;
 
   /**
-   * Removes the specified keys from the metadata properties of the specified {@link NamespacedId}. This API only
+   * Removes the specified keys from the metadata properties of the specified {@link NamespacedEntityId}. This API only
    * supports removing properties in {@link MetadataScope#USER}.
    *
-   * @param namespacedId the {@link NamespacedId} to remove the specified properties for
+   * @param namespacedEntityId the {@link NamespacedEntityId} to remove the specified properties for
    * @param keys the metadata property keys to remove
    * @throws NotFoundException if the specified entity was not found
    */
-  void removeProperties(NamespacedId namespacedId, String... keys) throws NotFoundException;
+  void removeProperties(NamespacedEntityId namespacedEntityId, String... keys) throws NotFoundException;
 
   /**
-   * Removes all tags from the specified {@link NamespacedId}. This API only supports removing tags in
+   * Removes all tags from the specified {@link NamespacedEntityId}. This API only supports removing tags in
    * {@link MetadataScope#USER}.
    *
-   * @param namespacedId the {@link NamespacedId} to remove tags for
+   * @param namespacedEntityId the {@link NamespacedEntityId} to remove tags for
    * @throws NotFoundException if the specified entity was not found
    */
-  void removeTags(NamespacedId namespacedId) throws NotFoundException;
+  void removeTags(NamespacedEntityId namespacedEntityId) throws NotFoundException;
 
   /**
-   * Removes the specified tags from the specified {@link NamespacedId}. This API only supports removing tags in
+   * Removes the specified tags from the specified {@link NamespacedEntityId}. This API only supports removing tags in
    * {@link MetadataScope#USER}.
    *
-   * @param namespacedId the {@link NamespacedId} to remove the specified tags for
+   * @param namespacedEntityId the {@link NamespacedEntityId} to remove the specified tags for
    * @param tags the tags to remove
    * @throws NotFoundException if the specified entity was not found
    */
-  void removeTags(NamespacedId namespacedId, String ... tags) throws NotFoundException;
+  void removeTags(NamespacedEntityId namespacedEntityId, String ... tags) throws NotFoundException;
 
   /**
    * Executes a search for CDAP entities in the specified namespace with the specified search query and

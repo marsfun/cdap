@@ -22,7 +22,7 @@ import co.cask.cdap.data2.metadata.store.MetadataStore;
 import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.NamespaceMeta;
 import co.cask.cdap.proto.id.DatasetId;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.metadata.MetadataSearchResultRecord;
 import co.cask.cdap.proto.metadata.MetadataSearchTargetType;
 import co.cask.cdap.store.NamespaceStore;
@@ -57,7 +57,7 @@ final class DeletedDatasetMetadataRemover {
         metadataStore.searchMetadataOnType(namespaceMeta.getName(), "*",
                                            ImmutableSet.of(MetadataSearchTargetType.DATASET));
       for (MetadataSearchResultRecord searchResult : searchResults) {
-        NamespacedId entityId = searchResult.getEntityId();
+        NamespacedEntityId entityId = searchResult.getEntityId();
         Preconditions.checkState(entityId instanceof DatasetId,
                                  "Since search was filtered for %s, expected result to be a %s, but got a %s",
                                  MetadataSearchTargetType.DATASET, Id.DatasetInstance.class.getSimpleName(),

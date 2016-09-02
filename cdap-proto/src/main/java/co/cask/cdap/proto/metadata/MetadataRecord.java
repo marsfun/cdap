@@ -16,7 +16,7 @@
 
 package co.cask.cdap.proto.metadata;
 
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 
 import java.util.Collections;
 import java.util.Map;
@@ -24,12 +24,12 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Represents the complete metadata of a {@link NamespacedId} including its properties, tags in a given
+ * Represents the complete metadata of a {@link NamespacedEntityId} including its properties, tags in a given
  * {@link MetadataScope}
  */
 @Deprecated
 public class MetadataRecord {
-  private final NamespacedId namespacedId;
+  private final NamespacedEntityId namespacedEntityId;
   private final MetadataScope scope;
   private final Map<String, String> properties;
   private final Set<String> tags;
@@ -37,8 +37,8 @@ public class MetadataRecord {
   /**
    * Returns an empty {@link MetadataRecord} in the specified {@link MetadataScope}.
    */
-  public MetadataRecord(NamespacedId namespacedId, MetadataScope scope) {
-    this(namespacedId, scope, Collections.<String, String>emptyMap(), Collections.<String>emptySet());
+  public MetadataRecord(NamespacedEntityId namespacedEntityId, MetadataScope scope) {
+    this(namespacedEntityId, scope, Collections.<String, String>emptyMap(), Collections.<String>emptySet());
   }
 
   /**
@@ -48,16 +48,16 @@ public class MetadataRecord {
     this(other.getEntityId(), other.getScope(), other.getProperties(), other.getTags());
   }
 
-  public MetadataRecord(NamespacedId namespacedId, MetadataScope scope, Map<String, String> properties,
+  public MetadataRecord(NamespacedEntityId namespacedEntityId, MetadataScope scope, Map<String, String> properties,
                         Set<String> tags) {
-    this.namespacedId = namespacedId;
+    this.namespacedEntityId = namespacedEntityId;
     this.scope = scope;
     this.properties = properties;
     this.tags = tags;
   }
 
-  public NamespacedId getEntityId() {
-    return namespacedId;
+  public NamespacedEntityId getEntityId() {
+    return namespacedEntityId;
   }
 
   public MetadataScope getScope() {
@@ -83,7 +83,7 @@ public class MetadataRecord {
 
     MetadataRecord that = (MetadataRecord) o;
 
-    return Objects.equals(namespacedId, that.namespacedId) &&
+    return Objects.equals(namespacedEntityId, that.namespacedEntityId) &&
       scope == that.scope &&
       Objects.equals(properties, that.properties) &&
       Objects.equals(tags, that.tags);
@@ -91,13 +91,13 @@ public class MetadataRecord {
 
   @Override
   public int hashCode() {
-    return Objects.hash(namespacedId, scope, properties, tags);
+    return Objects.hash(namespacedEntityId, scope, properties, tags);
   }
 
   @Override
   public String toString() {
     return "MetadataRecord{" +
-      "namespacedId=" + namespacedId +
+      "namespacedEntityId=" + namespacedEntityId +
       ", scope=" + scope +
       ", properties=" + properties +
       ", tags=" + tags +

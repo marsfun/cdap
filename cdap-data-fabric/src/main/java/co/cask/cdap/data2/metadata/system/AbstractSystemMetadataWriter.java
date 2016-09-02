@@ -21,7 +21,7 @@ import co.cask.cdap.data2.metadata.dataset.MetadataDataset;
 import co.cask.cdap.data2.metadata.indexer.SchemaIndexer;
 import co.cask.cdap.data2.metadata.store.MetadataStore;
 import co.cask.cdap.proto.Id;
-import co.cask.cdap.proto.id.NamespacedId;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.metadata.MetadataScope;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -51,9 +51,9 @@ public abstract class AbstractSystemMetadataWriter implements SystemMetadataWrit
   protected static final Set<String> PRESERVE_PROPERTIES = ImmutableSet.of(CREATION_TIME, DESCRIPTION);
 
   private final MetadataStore metadataStore;
-  private final NamespacedId entityId;
+  private final NamespacedEntityId entityId;
 
-  public AbstractSystemMetadataWriter(MetadataStore metadataStore, NamespacedId entityId) {
+  public AbstractSystemMetadataWriter(MetadataStore metadataStore, NamespacedEntityId entityId) {
     this.metadataStore = metadataStore;
     this.entityId = entityId;
   }
