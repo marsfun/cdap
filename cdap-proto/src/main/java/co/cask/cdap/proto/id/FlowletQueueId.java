@@ -34,7 +34,7 @@ public class FlowletQueueId extends NamespacedEntityId implements ParentedId<Flo
   private transient Integer hashCode;
 
   public FlowletQueueId(String namespace, String application, String flow, String flowlet, String queue) {
-    super(EntityType.FLOWLET_QUEUE, namespace);
+    super(namespace, EntityType.FLOWLET_QUEUE);
     this.application = application;
     this.flow = flow;
     this.flowlet = flowlet;

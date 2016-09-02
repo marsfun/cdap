@@ -31,7 +31,7 @@ public class DatasetModuleId extends NamespacedEntityId implements ParentedId<Na
   private transient Integer hashCode;
 
   public DatasetModuleId(String namespace, String module) {
-    super(EntityType.DATASET_MODULE, namespace);
+    super(namespace, EntityType.DATASET_MODULE);
     this.module = module;
   }
 

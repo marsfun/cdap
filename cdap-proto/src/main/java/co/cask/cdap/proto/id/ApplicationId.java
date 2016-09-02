@@ -32,7 +32,7 @@ public class ApplicationId extends NamespacedEntityId implements ParentedId<Name
   private transient Integer hashCode;
 
   public ApplicationId(String namespace, String application) {
-    super(EntityType.APPLICATION, namespace);
+    super(namespace, EntityType.APPLICATION);
     this.application = application;
   }
 

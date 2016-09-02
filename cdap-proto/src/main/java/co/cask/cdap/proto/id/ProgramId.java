@@ -35,7 +35,7 @@ public class ProgramId extends NamespacedEntityId implements ParentedId<Applicat
   private transient Integer hashCode;
 
   public ProgramId(String namespace, String application, ProgramType type, String program) {
-    super(EntityType.PROGRAM, namespace);
+    super(namespace, EntityType.PROGRAM);
     this.application = application;
     this.type = type;
     this.program = program;

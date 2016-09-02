@@ -32,7 +32,7 @@ public class StreamViewId extends NamespacedEntityId implements ParentedId<Strea
   private transient Integer hashCode;
 
   public StreamViewId(String namespace, String stream, String view) {
-    super(EntityType.STREAM_VIEW, namespace);
+    super(namespace, EntityType.STREAM_VIEW);
     this.stream = stream;
     this.view = view;
   }

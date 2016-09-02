@@ -31,7 +31,7 @@ public class DatasetTypeId extends NamespacedEntityId implements ParentedId<Name
   private transient Integer hashCode;
 
   public DatasetTypeId(String namespace, String type) {
-    super(EntityType.DATASET_TYPE, namespace);
+    super(namespace, EntityType.DATASET_TYPE);
     this.type = type;
   }
 

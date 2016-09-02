@@ -33,7 +33,7 @@ public class DatasetId extends NamespacedEntityId implements ParentedId<Namespac
   private final transient NamespaceId namespaceId;
 
   public DatasetId(String namespace, String dataset) {
-    super(EntityType.DATASET, namespace);
+    super(namespace, EntityType.DATASET);
 
     // Preconstruct the parent since it will get used many times for authorization for each dataset op.
     this.namespaceId = new NamespaceId(namespace);

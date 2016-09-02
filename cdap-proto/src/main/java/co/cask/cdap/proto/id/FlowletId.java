@@ -34,7 +34,7 @@ public class FlowletId extends NamespacedEntityId implements ParentedId<ProgramI
   private transient Integer hashCode;
 
   public FlowletId(String namespace, String application, String flow, String flowlet) {
-    super(EntityType.FLOWLET, namespace);
+    super(namespace, EntityType.FLOWLET);
     this.application = application;
     this.flow = flow;
     this.flowlet = flowlet;

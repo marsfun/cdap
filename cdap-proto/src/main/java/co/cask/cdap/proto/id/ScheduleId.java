@@ -32,7 +32,7 @@ public class ScheduleId extends NamespacedEntityId implements ParentedId<Applica
   private transient Integer hashCode;
 
   public ScheduleId(String namespace, String application, String schedule) {
-    super(EntityType.SCHEDULE, namespace);
+    super(namespace, EntityType.SCHEDULE);
     this.application = application;
     this.schedule = schedule;
   }

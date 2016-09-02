@@ -31,7 +31,7 @@ public class StreamId extends NamespacedEntityId implements ParentedId<Namespace
   private transient Integer hashCode;
 
   public StreamId(String namespace, String stream) {
-    super(EntityType.STREAM, namespace);
+    super(namespace, EntityType.STREAM);
     this.stream = stream;
   }
 

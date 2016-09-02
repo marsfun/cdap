@@ -33,7 +33,7 @@ public class NotificationFeedId extends NamespacedEntityId implements ParentedId
   private transient Integer hashCode;
 
   public NotificationFeedId(String namespace, String category, String feed) {
-    super(EntityType.NOTIFICATION_FEED, namespace);
+    super(namespace, EntityType.NOTIFICATION_FEED);
     this.category = category;
     this.feed = feed;
   }

@@ -24,7 +24,7 @@ public abstract class NamespacedEntityId extends EntityId {
 
   protected final String namespace;
 
-  protected NamespacedEntityId(EntityType entity, String namespace) {
+  protected NamespacedEntityId(String namespace, EntityType entity) {
     super(entity);
     this.namespace = namespace;
   }

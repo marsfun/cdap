@@ -32,7 +32,7 @@ public class ArtifactId extends NamespacedEntityId implements ParentedId<Namespa
   private transient Integer hashCode;
 
   public ArtifactId(String namespace, String artifact, String version) {
-    super(EntityType.ARTIFACT, namespace);
+    super(namespace, EntityType.ARTIFACT);
     this.artifact = artifact;
     this.version = version;
   }

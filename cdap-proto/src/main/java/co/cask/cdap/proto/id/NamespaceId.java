@@ -35,7 +35,7 @@ public class NamespaceId extends NamespacedEntityId {
   private transient Integer hashCode;
 
   public NamespaceId(String namespace) {
-    super(EntityType.NAMESPACE, namespace);
+    super(namespace, EntityType.NAMESPACE);
   }
 
   @Override

@@ -36,7 +36,7 @@ public class SecureKeyId extends NamespacedEntityId implements ParentedId<Namesp
   private transient Integer hashCode;
 
   public SecureKeyId(String namespace, String name) {
-    super(EntityType.SECUREKEY, namespace);
+    super(namespace, EntityType.SECUREKEY);
     if (!isValidSecureKey(name)) {
       throw new IllegalArgumentException(String.format("Improperly formatted secure key name '%s'." +
                                                          " The name can contain lower case alphabets," +
