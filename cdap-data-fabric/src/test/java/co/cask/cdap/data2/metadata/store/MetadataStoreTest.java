@@ -312,6 +312,8 @@ public class MetadataStoreTest {
     store.addTags(MetadataScope.SYSTEM, flow1, flowSysTags.toArray(new String[flowSysTags.size()]));
     store.addTags(MetadataScope.USER, stream1, streamUserTags.toArray(new String[streamUserTags.size()]));
     store.removeTags(MetadataScope.USER, stream1, streamUserTags.toArray(new String[streamUserTags.size()]));
+    store.setProperties(MetadataScope.USER, stream1, flowUserProps);
+    store.removeProperties(MetadataScope.USER, stream1, "key1", "key2", "multiword");
 
     Map<String, String> streamUserProps = ImmutableMap.of("sKey1", "sValue1 sValue2",
                                                                    "Key1", "Value1");
