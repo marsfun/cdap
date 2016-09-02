@@ -78,7 +78,6 @@ public class MetadataStoreTest {
   private final ProgramId flow = app.flow("flow");
   private final DatasetId dataset = NamespaceId.DEFAULT.dataset("ds");
   private final StreamId stream = NamespaceId.DEFAULT.stream("stream");
-
   private final Set<String> datasetTags = ImmutableSet.of("dTag");
   private final Map<String, String> appProperties = ImmutableMap.of("aKey", "aValue");
   private final Set<String> appTags = ImmutableSet.of("aTag");
@@ -224,7 +223,7 @@ public class MetadataStoreTest {
       // Ignore system audit messages
       if (auditMessage.getEntityId() instanceof NamespacedId) {
         String systemNs = NamespaceId.SYSTEM.getNamespace();
-        if (!((NamespacedId) auditMessage.getEntityId()).equals(systemNs)) {
+        if (!((NamespacedId) auditMessage.getEntityId()).getNamespace().equals(systemNs)) {
           actualAuditMessages.add(auditMessage);
         }
       }

@@ -17,6 +17,7 @@
 package co.cask.cdap.data2.metadata.dataset;
 
 import co.cask.cdap.data2.dataset2.lib.table.MDSKey;
+import co.cask.cdap.proto.ProgramType;
 import co.cask.cdap.proto.id.ApplicationId;
 import co.cask.cdap.proto.id.ArtifactId;
 import co.cask.cdap.proto.id.DatasetId;
@@ -24,8 +25,6 @@ import co.cask.cdap.proto.id.NamespacedId;
 import co.cask.cdap.proto.id.ProgramId;
 import co.cask.cdap.proto.id.StreamId;
 import co.cask.cdap.proto.id.StreamViewId;
-
-import java.util.Arrays;
 
 /**
  * Helper methods for keys of {@link MetadataDataset}.
@@ -90,29 +89,29 @@ final class KeyHelper {
       String appId = keySplitter.getString();
       String programType = keySplitter.getString();
       String programId = keySplitter.getString();
-      return ProgramId.fromIdParts(Arrays.asList(namespaceId, appId, programType, programId));
+      return new ProgramId(namespaceId, appId, ProgramType.valueOf(programType), programId);
     } else if (type.equals(ApplicationId.class.getSimpleName())) {
       String namespaceId = keySplitter.getString();
       String appId = keySplitter.getString();
-      return ApplicationId.fromIdParts(Arrays.asList(namespaceId, appId));
+      return new ApplicationId(namespaceId, appId);
     } else if (type.equals(ArtifactId.class.getSimpleName())) {
       String namespaceId = keySplitter.getString();
       String name = keySplitter.getString();
       String version = keySplitter.getString();
-      return ArtifactId.fromIdParts(Arrays.asList(namespaceId, name, version));
+      return new ArtifactId(namespaceId, name, version);
     } else if (type.equals(DatasetId.class.getSimpleName())) {
       String namespaceId = keySplitter.getString();
       String instanceId  = keySplitter.getString();
-      return DatasetId.fromIdParts(Arrays.asList(namespaceId, instanceId));
+      return new DatasetId(namespaceId, instanceId);
     } else if (type.equals(StreamId.class.getSimpleName())) {
       String namespaceId = keySplitter.getString();
       String instanceId  = keySplitter.getString();
-      return StreamId.fromIdParts(Arrays.asList(namespaceId, instanceId));
+      return new StreamId(namespaceId, instanceId);
     } else if (type.equals(StreamViewId.class.getSimpleName())) {
       String namespaceId = keySplitter.getString();
       String streamId  = keySplitter.getString();
       String viewId = keySplitter.getString();
-      return StreamViewId.fromIdParts(Arrays.asList(namespaceId, streamId, viewId));
+      return new StreamViewId(namespaceId, streamId, viewId);
     }
     throw new IllegalArgumentException("Illegal Type " + type + " of metadata source.");
   }
