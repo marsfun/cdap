@@ -59,7 +59,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -251,9 +250,9 @@ public class MetadataStoreTest {
 
   @Test
   public void testSearchWeight() throws Exception {
-    ProgramId flow1 = ProgramId.fromIdParts(Arrays.asList("ns1", "app1", ProgramType.FLOW.getPrettyName(), "flow1"));
-    StreamId stream1 = StreamId.fromIdParts(Arrays.asList("ns1", "s1"));
-    DatasetId dataset1 = DatasetId.fromIdParts(Arrays.asList("ns1", "ds1"));
+    ProgramId flow1 = new ProgramId("ns1", "app1", ProgramType.FLOW, "flow1");
+    StreamId stream1 = new StreamId("ns1", "s1");
+    DatasetId dataset1 = new DatasetId("ns1", "ds1");
 
     // Add metadata
     String multiWordValue = "aV1 av2 ,  -  ,  av3 - av4_av5 av6";

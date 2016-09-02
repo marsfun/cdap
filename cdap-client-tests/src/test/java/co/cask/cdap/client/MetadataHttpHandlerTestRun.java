@@ -91,17 +91,18 @@ public class MetadataHttpHandlerTestRun extends MetadataTestBase {
     Arrays.asList(NamespaceId.DEFAULT.getNamespace(), application.getApplication(), "1.0.0"));
   private final ProgramId pingService = ProgramId.fromIdParts(
     Arrays.asList(application.getNamespace(), ProgramType.SERVICE.getPrettyName(), "PingService"));
-  private final DatasetId myds = DatasetId.fromIdParts(Arrays.asList(NamespaceId.DEFAULT.getNamespace(), "myds"));
-  private final StreamId mystream = StreamId.fromIdParts(Arrays.asList(NamespaceId.DEFAULT.getNamespace(), "mystream"));
+  private final DatasetId myds = new DatasetId(NamespaceId.DEFAULT.getNamespace(), "myds");
+  private final StreamId mystream = new StreamId(NamespaceId.DEFAULT.getNamespace(), "mystream");
   private final StreamViewId myview = StreamViewId.fromIdParts(
     Arrays.asList(mystream.getNamespace(), mystream.getStream(), "myview"));
   private final ApplicationId nonExistingApp = ApplicationId.fromIdParts(
     Arrays.asList("blah", AppWithDataset.class.getSimpleName()));
   private final Id.Service nonExistingService = Id.Service.from(nonExistingApp.toId(), "PingService");
-  private final DatasetId nonExistingDataset = DatasetId.fromIdParts(Arrays.asList("blah", "myds"));
-  private final StreamId nonExistingStream = StreamId.fromIdParts(Arrays.asList("blah", "mystream"));
-  private final Id.Stream.View nonExistingView = Id.Stream.View.from(nonExistingStream.toId(), "myView");
-  private final ArtifactId nonExistingArtifact = ArtifactId.fromIdParts(Arrays.asList("blah", "art", "1.0.0"));
+  private final DatasetId nonExistingDataset = new DatasetId("blah", "myds");
+  private final StreamId nonExistingStream = new StreamId("blah", "mystream");
+  private final StreamViewId nonExistingView = new StreamViewId(nonExistingStream.getNamespace(),
+                                                                nonExistingStream.getEntityName(), "myView");
+  private final ArtifactId nonExistingArtifact = new ArtifactId("blah", "art", "1.0.0");
 
   @Before
   public void before() throws Exception {
@@ -283,7 +284,7 @@ public class MetadataHttpHandlerTestRun extends MetadataTestBase {
     addProperties(nonExistingService.toEntityId(), serviceProperties, NotFoundException.class);
     addProperties(nonExistingDataset, datasetProperties, NotFoundException.class);
     addProperties(nonExistingStream, streamProperties, NotFoundException.class);
-    addProperties(nonExistingView.toEntityId(), streamProperties, NotFoundException.class);
+    addProperties(nonExistingView, streamProperties, NotFoundException.class);
     addProperties(nonExistingArtifact, artifactProperties, NotFoundException.class);
   }
 
@@ -400,7 +401,7 @@ public class MetadataHttpHandlerTestRun extends MetadataTestBase {
     addTags(nonExistingService.toEntityId(), serviceTags, NotFoundException.class);
     addTags(nonExistingDataset, datasetTags, NotFoundException.class);
     addTags(nonExistingStream, streamTags, NotFoundException.class);
-    addTags(nonExistingView.toEntityId(), streamTags, NotFoundException.class);
+    addTags(nonExistingView, streamTags, NotFoundException.class);
     addTags(nonExistingArtifact, artifactTags, NotFoundException.class);
   }
 
@@ -505,13 +506,11 @@ public class MetadataHttpHandlerTestRun extends MetadataTestBase {
     Assert.assertEquals(2, properties.size());
 
     // Delete the App after stopping the flow
-    appClient.delete(ApplicationId.fromIdParts(Arrays.asList(TEST_NAMESPACE1.getNamespace(),
-                                                             programId.getApplication())).toId());
+    appClient.delete(new ApplicationId(TEST_NAMESPACE1.getNamespace(), programId.getApplication()).toId());
 
     // Delete again should throw not found exception
     try {
-      appClient.delete(ApplicationId.fromIdParts(Arrays.asList(TEST_NAMESPACE1.getNamespace(),
-                                                               programId.getApplication())).toId());
+      appClient.delete(new ApplicationId(TEST_NAMESPACE1.getNamespace(), programId.getApplication()).toId());
       Assert.fail("Expected NotFoundException");
     } catch (NotFoundException e) {
       // expected
@@ -526,8 +525,8 @@ public class MetadataHttpHandlerTestRun extends MetadataTestBase {
     ProgramId nonExistingProgram = ProgramId.fromIdParts(
       Arrays.asList(application.getNamespace(), application.getApplication(), ProgramType.SERVICE.getPrettyName(),
                     "NonExistingService"));
-    DatasetId nonExistingDataset = DatasetId.fromIdParts(Arrays.asList(NamespaceId.DEFAULT.getNamespace(),
-                                                                       "NonExistingDataset"));
+    DatasetId nonExistingDataset = new DatasetId(NamespaceId.DEFAULT.getNamespace(),
+                                                                       "NonExistingDataset");
     StreamId nonExistingStream = StreamId.fromIdParts(
       Arrays.asList(NamespaceId.DEFAULT.getNamespace(), "NonExistingStream"));
     StreamViewId nonExistingView = StreamViewId.fromIdParts(
@@ -664,7 +663,7 @@ public class MetadataHttpHandlerTestRun extends MetadataTestBase {
                                          streamSystemTags)), streamSystemMetadata);
 
     // create view and verify view system metadata
-    StreamViewId view = StreamViewId.fromIdParts(Arrays.asList(streamId.getNamespace(), streamId.getStream(), "view"));
+    StreamViewId view = new StreamViewId(streamId.getNamespace(), streamId.getStream(), "view");
     Schema viewSchema = Schema.recordOf("record",
                                         Schema.Field.of("viewBody", Schema.nullableOf(Schema.of(Schema.Type.BYTES))));
     streamViewClient.createOrUpdate(view.toId(), new ViewSpecification(new FormatSpecification("format", viewSchema)));
@@ -1072,12 +1071,12 @@ public class MetadataHttpHandlerTestRun extends MetadataTestBase {
     appClient.deploy(namespace.toId(), createAppJarFile(WordCountApp.class, WordCountApp.class.getSimpleName(), "1.0"));
 
     Set<String> tags = ImmutableSet.of("tag1", "tag2");
-    ArtifactId artifact = ArtifactId.fromIdParts(Arrays.asList(namespace.getNamespace(), "WordCountApp", "1.0"));
-    ApplicationId app = ApplicationId.fromIdParts(Arrays.asList(namespace.getNamespace(), "WordCountApp"));
+    ArtifactId artifact = new ArtifactId(namespace.getNamespace(), "WordCountApp", "1.0");
+    ApplicationId app = new ApplicationId(namespace.getNamespace(), "WordCountApp");
     Id.Flow flow = Id.Flow.from(app.toId(), "WordCountFlow");
     Id.Service service = Id.Service.from(app.toId(), "WordFrequencyService");
-    StreamId stream = StreamId.fromIdParts(Arrays.asList(namespace.getNamespace(), "text"));
-    DatasetId datasetInstance = DatasetId.fromIdParts(Arrays.asList(namespace.getNamespace(), "mydataset"));
+    StreamId stream = new StreamId(namespace.getNamespace(), "text");
+    DatasetId datasetInstance = new DatasetId(namespace.getNamespace(), "mydataset");
     StreamViewId view = StreamViewId.fromIdParts(
       Arrays.asList(namespace.getNamespace(), stream.getStream(), "view"));
     streamViewClient.createOrUpdate(view.toId(), new ViewSpecification(new FormatSpecification("csv", null, null)));
@@ -1134,13 +1133,13 @@ public class MetadataHttpHandlerTestRun extends MetadataTestBase {
     appClient.deploy(namespace.toId(), createAppJarFile(WordCountApp.class, WordCountApp.class.getSimpleName(), "1.0"));
 
     Set<String> tags = ImmutableSet.of("tag1", "tag2");
-    ArtifactId artifact = ArtifactId.fromIdParts(Arrays.asList(namespace.getNamespace(), "WordCountApp", "1.0"));
-    ApplicationId app = ApplicationId.fromIdParts(Arrays.asList(namespace.getNamespace(), "WordCountApp"));
+    ArtifactId artifact = new ArtifactId(namespace.getNamespace(), "WordCountApp", "1.0");
+    ApplicationId app = new ApplicationId(namespace.getNamespace(), "WordCountApp");
     Id.Flow flow = Id.Flow.from(app.toId(), "WordCountFlow");
     Id.Service service = Id.Service.from(app.toId(), "WordFrequencyService");
-    StreamId stream = StreamId.fromIdParts(Arrays.asList(namespace.getNamespace(), "text"));
-    DatasetId datasetInstance = DatasetId.fromIdParts(Arrays.asList(namespace.getNamespace(), "mydataset"));
-    StreamViewId view = StreamViewId.fromIdParts(Arrays.asList(namespace.getNamespace(), stream.getStream(), "view"));
+    StreamId stream = new StreamId(namespace.getNamespace(), "text");
+    DatasetId datasetInstance = new DatasetId(namespace.getNamespace(), "mydataset");
+    StreamViewId view = new StreamViewId(namespace.getNamespace(), stream.getStream(), "view");
     streamViewClient.createOrUpdate(view.toId(), new ViewSpecification(new FormatSpecification("csv", null, null)));
 
 

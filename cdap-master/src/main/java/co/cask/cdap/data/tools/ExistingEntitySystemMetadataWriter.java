@@ -113,7 +113,7 @@ public class ExistingEntitySystemMetadataWriter {
 
   private void writeSystemMetadataForApps(NamespaceId namespace) {
     for (ApplicationSpecification appSpec : store.getAllApplications(namespace.toId())) {
-      ApplicationId app = ApplicationId.fromIdParts(Arrays.asList(namespace.getNamespace(), appSpec.getName()));
+      ApplicationId app = new ApplicationId(namespace.getNamespace(), appSpec.getName());
       SystemMetadataWriter writer = new AppSystemMetadataWriter(metadataStore, app, appSpec);
       writer.write();
       writeSystemMetadataForPrograms(app, appSpec);
@@ -144,7 +144,7 @@ public class ExistingEntitySystemMetadataWriter {
       new SystemDatasetInstantiatorFactory(locationFactory, dsFramework, cConf);
     try (SystemDatasetInstantiator systemDatasetInstantiator = systemDatasetInstantiatorFactory.create()) {
       for (DatasetSpecificationSummary summary : dsFramework.getInstances(namespace.toId())) {
-        DatasetId dsInstance = DatasetId.fromIdParts(Arrays.asList(namespace.getNamespace(), summary.getName()));
+        DatasetId dsInstance = new DatasetId(namespace.getNamespace(), summary.getName());
         DatasetProperties dsProperties = DatasetProperties.of(summary.getProperties());
         String dsType = summary.getType();
         Dataset dataset = null;
@@ -170,7 +170,7 @@ public class ExistingEntitySystemMetadataWriter {
 
   private void writeSystemMetadataForStreams(NamespaceId namespace) throws Exception {
     for (StreamSpecification streamSpec : store.getAllStreams(namespace.toId())) {
-      StreamId streamId = StreamId.fromIdParts(Arrays.asList(namespace.getNamespace(), streamSpec.getName()));
+      StreamId streamId = new StreamId(namespace.getNamespace(), streamSpec.getName());
       SystemMetadataWriter writer =
         new StreamSystemMetadataWriter(metadataStore, streamId.toId(), streamAdmin.getConfig(streamId.toId()),
                                        streamSpec.getDescription());

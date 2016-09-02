@@ -46,7 +46,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Test AbstractSystemMetadataWriter.
@@ -89,7 +88,7 @@ public class AbstractSystemMetadataWriterTest {
 
   @Test
   public void testMetadataOverwrite() throws Exception {
-    DatasetId dsInstance = DatasetId.fromIdParts(Arrays.asList("ns1", "ds1"));
+    DatasetId dsInstance = new DatasetId("ns1", "ds1");
     DatasetSystemMetadataWriter datasetSystemMetadataWriter =
       new DatasetSystemMetadataWriter(store, dsInstance.toId(),
                                       DatasetProperties.builder()

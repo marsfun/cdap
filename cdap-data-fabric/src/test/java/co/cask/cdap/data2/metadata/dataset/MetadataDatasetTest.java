@@ -40,7 +40,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -61,16 +60,15 @@ public class MetadataDatasetTest {
 
   private MetadataDataset dataset;
 
-  private final ApplicationId app1 = ApplicationId.fromIdParts(Arrays.asList("ns1", "app1"));
-  private final ApplicationId appNs2 = ApplicationId.fromIdParts(Arrays.asList("ns2", "app1"));
+  private final ApplicationId app1 = new ApplicationId("ns1", "app1");
+  private final ApplicationId appNs2 = new ApplicationId("ns2", "app1");
   // Have to use Id.Program for comparison here because the MetadataDataset APIs return Id.Program.
-  private final ProgramId flow1 = ProgramId.fromIdParts(Arrays.asList("ns1", "app1", ProgramType.FLOW.getPrettyName(),
-                                                                      "flow1"));
-  private final DatasetId dataset1 = DatasetId.fromIdParts(Arrays.asList("ns1", "ds1"));
-  private final StreamId stream1 = StreamId.fromIdParts(Arrays.asList("ns1", "s1"));
-  private final StreamViewId view1 = StreamViewId.fromIdParts(Arrays.asList(stream1.getStream(), "v1"));
+  private final ProgramId flow1 = new ProgramId("ns1", "app1", ProgramType.FLOW, "flow1");
+  private final DatasetId dataset1 = new DatasetId("ns1", "ds1");
+  private final StreamId stream1 = new StreamId("ns1", "s1");
+  private final StreamViewId view1 = new StreamViewId(stream1.getNamespace(), stream1.getStream(), "v1");
   private final co.cask.cdap.proto.id.ArtifactId artifact1 =
-    co.cask.cdap.proto.id.ArtifactId.fromIdParts(Arrays.asList("ns1", "a1", "1.0.0"));
+    new co.cask.cdap.proto.id.ArtifactId("ns1", "a1", "1.0.0");
 
   @Before
   public void before() throws Exception {
@@ -408,10 +406,10 @@ public class MetadataDatasetTest {
   @Test
   public void testSearchIncludesSystemEntities() {
     // Use the same artifact in two different namespaces - system and ns2
-    co.cask.cdap.proto.id.ArtifactId sysArtifact = co.cask.cdap.proto.id.ArtifactId.fromIdParts(Arrays.asList(
-      NamespaceId.SYSTEM.getNamespace(), "artifact", "1.0"));
-    co.cask.cdap.proto.id.ArtifactId ns2Artifact = co.cask.cdap.proto.id.ArtifactId.fromIdParts(Arrays.asList(
-      "ns2", "artifact", "1.0"));
+    co.cask.cdap.proto.id.ArtifactId sysArtifact = new co.cask.cdap.proto.id.ArtifactId(
+      NamespaceId.SYSTEM.getNamespace(), "artifact", "1.0");
+    co.cask.cdap.proto.id.ArtifactId ns2Artifact = new co.cask.cdap.proto.id.ArtifactId(
+      "ns2", "artifact", "1.0");
     String multiWordKey = "multiword";
     String multiWordValue = "aV1 av2 ,  -  ,  av3 - av4_av5 av6";
     dataset.setProperty(flow1, multiWordKey, multiWordValue);
