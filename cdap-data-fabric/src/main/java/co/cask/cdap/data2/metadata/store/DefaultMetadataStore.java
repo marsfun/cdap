@@ -164,7 +164,8 @@ public class DefaultMetadataStore implements MetadataStore {
 
   @Override
   public Set<MetadataRecord> getMetadata(NamespacedId namespacedId) {
-    return ImmutableSet.of(getMetadata(MetadataScope.USER, namespacedId), getMetadata(MetadataScope.SYSTEM, namespacedId));
+    return ImmutableSet.of(getMetadata(MetadataScope.USER, namespacedId), getMetadata(MetadataScope.SYSTEM,
+                                                                                      namespacedId));
   }
 
   @Override
@@ -256,7 +257,8 @@ public class DefaultMetadataStore implements MetadataStore {
     execute(new TransactionExecutor.Procedure<MetadataDataset>() {
       @Override
       public void apply(MetadataDataset input) throws Exception {
-        previousRef.set(new MetadataRecord(namespacedId, scope, input.getProperties(namespacedId), input.getTags(namespacedId)));
+        previousRef.set(new MetadataRecord(namespacedId, scope, input.getProperties(namespacedId),
+                                           input.getTags(namespacedId)));
         input.removeProperties(namespacedId);
         input.removeTags(namespacedId);
       }
@@ -274,7 +276,8 @@ public class DefaultMetadataStore implements MetadataStore {
     execute(new TransactionExecutor.Procedure<MetadataDataset>() {
       @Override
       public void apply(MetadataDataset input) throws Exception {
-        previousRef.set(new MetadataRecord(namespacedId, scope, input.getProperties(namespacedId), input.getTags(namespacedId)));
+        previousRef.set(new MetadataRecord(namespacedId, scope, input.getProperties(namespacedId),
+                                           input.getTags(namespacedId)));
         input.removeProperties(namespacedId);
       }
     }, scope);
@@ -292,7 +295,8 @@ public class DefaultMetadataStore implements MetadataStore {
     execute(new TransactionExecutor.Procedure<MetadataDataset>() {
       @Override
       public void apply(MetadataDataset input) throws Exception {
-        previousRef.set(new MetadataRecord(namespacedId, scope, input.getProperties(namespacedId), input.getTags(namespacedId)));
+        previousRef.set(new MetadataRecord(namespacedId, scope, input.getProperties(namespacedId),
+                                           input.getTags(namespacedId)));
         for (String key : keys) {
           MetadataEntry record = input.getProperty(namespacedId, key);
           if (record == null) {
@@ -316,7 +320,8 @@ public class DefaultMetadataStore implements MetadataStore {
     execute(new TransactionExecutor.Procedure<MetadataDataset>() {
       @Override
       public void apply(MetadataDataset input) throws Exception {
-        previousRef.set(new MetadataRecord(namespacedId, scope, input.getProperties(namespacedId), input.getTags(namespacedId)));
+        previousRef.set(new MetadataRecord(namespacedId, scope, input.getProperties(namespacedId),
+                                           input.getTags(namespacedId)));
         input.removeTags(namespacedId);
       }
     }, scope);
@@ -334,7 +339,8 @@ public class DefaultMetadataStore implements MetadataStore {
     execute(new TransactionExecutor.Procedure<MetadataDataset>() {
       @Override
       public void apply(MetadataDataset input) throws Exception {
-        previousRef.set(new MetadataRecord(namespacedId, scope, input.getProperties(namespacedId), input.getTags(namespacedId)));
+        previousRef.set(new MetadataRecord(namespacedId, scope, input.getProperties(namespacedId),
+                                           input.getTags(namespacedId)));
         input.removeTags(namespacedId, tagsToRemove);
       }
     }, scope);

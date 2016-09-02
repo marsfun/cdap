@@ -25,7 +25,6 @@ import co.cask.cdap.data.runtime.DataSetsModules;
 import co.cask.cdap.data.runtime.SystemDatasetRuntimeModule;
 import co.cask.cdap.data2.audit.AuditModule;
 import co.cask.cdap.data2.audit.InMemoryAuditPublisher;
-import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.ProgramType;
 import co.cask.cdap.proto.audit.AuditMessage;
 import co.cask.cdap.proto.audit.AuditType;
@@ -60,6 +59,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +78,7 @@ public class MetadataStoreTest {
   private final ProgramId flow = app.flow("flow");
   private final DatasetId dataset = NamespaceId.DEFAULT.dataset("ds");
   private final StreamId stream = NamespaceId.DEFAULT.stream("stream");
+
   private final Set<String> datasetTags = ImmutableSet.of("dTag");
   private final Map<String, String> appProperties = ImmutableMap.of("aKey", "aValue");
   private final Set<String> appTags = ImmutableSet.of("aTag");
@@ -223,7 +224,7 @@ public class MetadataStoreTest {
       // Ignore system audit messages
       if (auditMessage.getEntityId() instanceof NamespacedId) {
         String systemNs = NamespaceId.SYSTEM.getNamespace();
-        if (!((NamespacedId) auditMessage.getEntityId()).getNamespace().equals(systemNs)) {
+        if (!((NamespacedId) auditMessage.getEntityId()).equals(systemNs)) {
           actualAuditMessages.add(auditMessage);
         }
       }
@@ -251,9 +252,9 @@ public class MetadataStoreTest {
 
   @Test
   public void testSearchWeight() throws Exception {
-    Id.Program flow1 = Id.Program.from("ns1", "app1", ProgramType.FLOW, "flow1");
-    Id.Stream stream1 = Id.Stream.from("ns1", "s1");
-    Id.DatasetInstance dataset1 = Id.DatasetInstance.from("ns1", "ds1");
+    ProgramId flow1 = ProgramId.fromIdParts(Arrays.asList("ns1", "app1", ProgramType.FLOW.getPrettyName(), "flow1"));
+    StreamId stream1 = StreamId.fromIdParts(Arrays.asList("ns1", "s1"));
+    DatasetId dataset1 = DatasetId.fromIdParts(Arrays.asList("ns1", "ds1"));
 
     // Add metadata
     String multiWordValue = "aV1 av2 ,  -  ,  av3 - av4_av5 av6";
@@ -312,16 +313,16 @@ public class MetadataStoreTest {
   }
 
   private void generateMetadataUpdates() {
-    store.addTags(MetadataScope.USER, dataset.toId(), datasetTags.iterator().next());
-    store.setProperties(MetadataScope.USER, app.toId(), appProperties);
-    store.addTags(MetadataScope.USER, app.toId(), appTags.iterator().next());
-    store.setProperties(MetadataScope.USER, stream.toId(), streamProperties);
-    store.setProperties(MetadataScope.USER, stream.toId(), streamProperties);
-    store.setProperties(MetadataScope.USER, stream.toId(), updatedStreamProperties);
-    store.addTags(MetadataScope.USER, flow.toId(), flowTags.iterator().next());
-    store.removeTags(MetadataScope.USER, flow.toId());
-    store.removeTags(MetadataScope.USER, dataset.toId(), datasetTags.iterator().next());
-    store.removeProperties(MetadataScope.USER, stream.toId());
-    store.removeMetadata(MetadataScope.USER, app.toId());
+    store.addTags(MetadataScope.USER, dataset, datasetTags.iterator().next());
+    store.setProperties(MetadataScope.USER, app, appProperties);
+    store.addTags(MetadataScope.USER, app, appTags.iterator().next());
+    store.setProperties(MetadataScope.USER, stream, streamProperties);
+    store.setProperties(MetadataScope.USER, stream, streamProperties);
+    store.setProperties(MetadataScope.USER, stream, updatedStreamProperties);
+    store.addTags(MetadataScope.USER, flow, flowTags.iterator().next());
+    store.removeTags(MetadataScope.USER, flow);
+    store.removeTags(MetadataScope.USER, dataset, datasetTags.iterator().next());
+    store.removeProperties(MetadataScope.USER, stream);
+    store.removeMetadata(MetadataScope.USER, app);
   }
 }
