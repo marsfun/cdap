@@ -18,6 +18,7 @@ package co.cask.cdap.internal.app.runtime;
 
 import co.cask.cdap.api.Resources;
 import co.cask.cdap.app.runtime.Arguments;
+import co.cask.cdap.logging.appender.LogAppenderInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,20 @@ public final class SystemArguments {
 
   private static final String MEMORY_KEY = "system.resources.memory";
   private static final String CORES_KEY = "system.resources.cores";
+  private static final String LOG_LEVEL = "system.log.level";
+
+  public static void setLogLevel(Arguments args, LogAppenderInitializer initializer) {
+    setLogLevel(args.asMap(), initializer);
+  }
+
+  public static void setLogLevel(Map<String, String> args, LogAppenderInitializer initializer) {
+    String logLevel = args.get(LOG_LEVEL);
+    if (logLevel != null) {
+      initializer.initialize(logLevel);
+    } else {
+      initializer.initialize();
+    }
+  }
 
   /**
    * Returns the {@link Resources} based on configurations in the given arguments.

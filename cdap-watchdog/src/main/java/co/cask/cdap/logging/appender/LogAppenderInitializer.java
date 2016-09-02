@@ -16,6 +16,7 @@
 
 package co.cask.cdap.logging.appender;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.util.concurrent.ConcurrentMap;
+import javax.annotation.Nullable;
 
 /**
  * Creates and sets the logback log appender.
@@ -36,6 +38,7 @@ public class LogAppenderInitializer implements Closeable {
   private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(LogAppenderInitializer.class);
   private static final ConcurrentMap<String, String> initMap = Maps.newConcurrentMap();
   private final LogAppender logAppender;
+  private final String loggerName = org.slf4j.Logger.ROOT_LOGGER_NAME;
 
   @Inject
   public LogAppenderInitializer(LogAppender logAppender) {
@@ -43,17 +46,20 @@ public class LogAppenderInitializer implements Closeable {
   }
 
   public void initialize() {
+    initialize(loggerName, null);
+  }
+
+  public void initialize(String logLevel) {
     if (initMap.putIfAbsent(org.slf4j.Logger.ROOT_LOGGER_NAME, logAppender.getName()) != null) {
       // Already initialized.
       LOG.warn("Log appender {} is already initialized.", logAppender.getName());
       return;
     }
-
-    initialize(org.slf4j.Logger.ROOT_LOGGER_NAME);
+    initialize(loggerName, logLevel);
   }
 
   @VisibleForTesting
-  public void initialize(String rootLoggerName) {
+  public void initialize(String rootLoggerName, @Nullable String logLevel) {
     ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
     // TODO: fix logging issue in mapreduce:  ENG-3279
     if (!(loggerFactory instanceof LoggerContext)) {
@@ -64,6 +70,9 @@ public class LogAppenderInitializer implements Closeable {
 
     LoggerContext loggerContext = (LoggerContext) loggerFactory;
     Logger rootLogger = loggerContext.getLogger(rootLoggerName);
+    if (logLevel != null) {
+      rootLogger.setLevel(Level.toLevel(logLevel));
+    }
 
     LOG.info("Initializing log appender {}", logAppender.getName());
 
