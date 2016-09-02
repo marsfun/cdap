@@ -54,7 +54,8 @@ public interface MetadataAdmin {
    * @throws NotFoundException if the specified entity was not found
    * @throws InvalidMetadataException if some of the properties violate metadata validation rules
    */
-  void addTags(NamespacedEntityId namespacedEntityId, String... tags) throws NotFoundException, InvalidMetadataException;
+  void addTags(NamespacedEntityId namespacedEntityId, String... tags)
+    throws NotFoundException, InvalidMetadataException;
 
   /**
    * Returns a set of {@link MetadataRecord} representing all metadata (including properties and tags) for the specified
@@ -86,7 +87,8 @@ public interface MetadataAdmin {
    * {@link MetadataScope}
    * @throws NotFoundException if the specified entity was not found
    */
-  Map<String, String> getProperties(MetadataScope scope, NamespacedEntityId namespacedEntityId) throws NotFoundException;
+  Map<String, String> getProperties(MetadataScope scope, NamespacedEntityId namespacedEntityId)
+    throws NotFoundException;
 
   /**
    * @return all the tags for the specified {@link NamespacedEntityId} in both {@link MetadataScope#USER} and

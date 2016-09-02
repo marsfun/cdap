@@ -85,7 +85,8 @@ public class DefaultMetadataAdmin implements MetadataAdmin {
   }
 
   @Override
-  public void addTags(NamespacedEntityId namespacedEntityId, String... tags) throws NotFoundException, InvalidMetadataException {
+  public void addTags(NamespacedEntityId namespacedEntityId, String... tags)
+    throws NotFoundException, InvalidMetadataException {
     entityExistenceVerifier.ensureExists(namespacedEntityId);
     validateTags(namespacedEntityId, tags);
     metadataStore.addTags(MetadataScope.USER, namespacedEntityId, tags);
@@ -98,7 +99,8 @@ public class DefaultMetadataAdmin implements MetadataAdmin {
   }
 
   @Override
-  public Set<MetadataRecord> getMetadata(MetadataScope scope, NamespacedEntityId namespacedEntityId) throws NotFoundException {
+  public Set<MetadataRecord> getMetadata(MetadataScope scope, NamespacedEntityId namespacedEntityId)
+    throws NotFoundException {
     entityExistenceVerifier.ensureExists(namespacedEntityId);
     return ImmutableSet.of(metadataStore.getMetadata(scope, namespacedEntityId));
   }
@@ -110,7 +112,8 @@ public class DefaultMetadataAdmin implements MetadataAdmin {
   }
 
   @Override
-  public Map<String, String> getProperties(MetadataScope scope, NamespacedEntityId namespacedEntityId) throws NotFoundException {
+  public Map<String, String> getProperties(MetadataScope scope, NamespacedEntityId namespacedEntityId)
+    throws NotFoundException {
     entityExistenceVerifier.ensureExists(namespacedEntityId);
     return metadataStore.getProperties(scope, namespacedEntityId);
   }
@@ -216,7 +219,8 @@ public class DefaultMetadataAdmin implements MetadataAdmin {
   /**
    * Validate that the key is not reserved {@link MetadataDataset#TAGS_KEY}.
    */
-  private void validateTagReservedKey(NamespacedEntityId namespacedEntityId, String key) throws InvalidMetadataException {
+  private void validateTagReservedKey(NamespacedEntityId namespacedEntityId, String key)
+    throws InvalidMetadataException {
     if (MetadataDataset.TAGS_KEY.equals(key.toLowerCase())) {
       throw new InvalidMetadataException(namespacedEntityId,
                                          "Could not set metadata with reserved key " + MetadataDataset.TAGS_KEY);
@@ -226,7 +230,8 @@ public class DefaultMetadataAdmin implements MetadataAdmin {
   /**
    * Validate the key matches the {@link #KEY_AND_TAG_MATCHER} character test.
    */
-  private void validateKeyAndTagsFormat(NamespacedEntityId namespacedEntityId, String keyword) throws InvalidMetadataException {
+  private void validateKeyAndTagsFormat(NamespacedEntityId namespacedEntityId, String keyword)
+    throws InvalidMetadataException {
     if (!KEY_AND_TAG_MATCHER.matchesAllOf(keyword)) {
       throw new InvalidMetadataException(namespacedEntityId, "Illegal format for the value : " + keyword);
     }
@@ -235,7 +240,8 @@ public class DefaultMetadataAdmin implements MetadataAdmin {
   /**
    * Validate the value of a property matches the {@link #VALUE_MATCHER} character test.
    */
-  private void validateValueFormat(NamespacedEntityId namespacedEntityId, String keyword) throws InvalidMetadataException {
+  private void validateValueFormat(NamespacedEntityId namespacedEntityId, String keyword)
+    throws InvalidMetadataException {
     if (!VALUE_MATCHER.matchesAllOf(keyword)) {
       throw new InvalidMetadataException(namespacedEntityId, "Illegal format for the value : " + keyword);
     }

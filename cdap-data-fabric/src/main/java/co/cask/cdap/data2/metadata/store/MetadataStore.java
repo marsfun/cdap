@@ -216,7 +216,8 @@ public interface MetadataStore {
    * @param timeMillis time in milliseconds
    * @return the snapshot of the metadata for entities on or before the given time
    */
-  Set<MetadataRecord> getSnapshotBeforeTime(MetadataScope scope, Set<NamespacedEntityId> namespacedEntityIds, long timeMillis);
+  Set<MetadataRecord> getSnapshotBeforeTime(MetadataScope scope, Set<NamespacedEntityId> namespacedEntityIds,
+                                            long timeMillis);
 
   /**
    * Rebuild stale metadata indexes.

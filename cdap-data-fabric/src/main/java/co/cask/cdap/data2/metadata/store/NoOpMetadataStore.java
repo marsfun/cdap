@@ -33,7 +33,8 @@ import java.util.Set;
 public class NoOpMetadataStore implements MetadataStore {
 
   @Override
-  public void setProperties(MetadataScope scope, NamespacedEntityId namespacedEntityId, Map<String, String> properties) {
+  public void setProperties(MetadataScope scope, NamespacedEntityId namespacedEntityId,
+                            Map<String, String> properties) {
     // NO-OP
   }
 

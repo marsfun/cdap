@@ -99,7 +99,8 @@ public class DefaultMetadataStore implements MetadataStore {
   }
 
   @Override
-  public void setProperties(MetadataScope scope, NamespacedEntityId namespacedEntityId, Map<String, String> properties) {
+  public void setProperties(MetadataScope scope, NamespacedEntityId namespacedEntityId,
+                            Map<String, String> properties) {
     setProperties(scope, namespacedEntityId, properties, null);
   }
 
@@ -147,7 +148,8 @@ public class DefaultMetadataStore implements MetadataStore {
    * Adds tags for the specified {@link NamespacedEntityId}.
    */
   @Override
-  public void addTags(final MetadataScope scope, final NamespacedEntityId namespacedEntityId, final String... tagsToAdd) {
+  public void addTags(final MetadataScope scope, final NamespacedEntityId namespacedEntityId,
+                      final String... tagsToAdd) {
     final AtomicReference<MetadataRecord> previousRef = new AtomicReference<>();
     execute(new TransactionExecutor.Procedure<MetadataDataset>() {
       @Override
@@ -290,7 +292,8 @@ public class DefaultMetadataStore implements MetadataStore {
    * Removes the specified properties of the {@link NamespacedEntityId}.
    */
   @Override
-  public void removeProperties(final MetadataScope scope, final NamespacedEntityId namespacedEntityId, final String... keys) {
+  public void removeProperties(final MetadataScope scope, final NamespacedEntityId namespacedEntityId,
+                               final String... keys) {
     final AtomicReference<MetadataRecord> previousRef = new AtomicReference<>();
     final ImmutableMap.Builder<String, String> deletesBuilder = ImmutableMap.builder();
     execute(new TransactionExecutor.Procedure<MetadataDataset>() {
@@ -335,7 +338,8 @@ public class DefaultMetadataStore implements MetadataStore {
    * Removes the specified tags from the {@link NamespacedEntityId}
    */
   @Override
-  public void removeTags(final MetadataScope scope, final NamespacedEntityId namespacedEntityId, final String... tagsToRemove) {
+  public void removeTags(final MetadataScope scope, final NamespacedEntityId namespacedEntityId,
+                         final String... tagsToRemove) {
     final AtomicReference<MetadataRecord> previousRef = new AtomicReference<>();
     execute(new TransactionExecutor.Procedure<MetadataDataset>() {
       @Override
@@ -405,7 +409,8 @@ public class DefaultMetadataStore implements MetadataStore {
     return addMetadataToResults(resultList, systemMetadata, userMetadata);
   }
 
-  private Map<NamespacedEntityId, Metadata> fetchMetadata(final Set<NamespacedEntityId> namespacedEntityIds, MetadataScope scope) {
+  private Map<NamespacedEntityId, Metadata> fetchMetadata(final Set<NamespacedEntityId> namespacedEntityIds,
+                                                          MetadataScope scope) {
     Set<Metadata> metadataSet =
       execute(new TransactionExecutor.Function<MetadataDataset, Set<Metadata>>() {
         @Override
@@ -447,7 +452,8 @@ public class DefaultMetadataStore implements MetadataStore {
   }
 
   @Override
-  public Set<MetadataRecord> getSnapshotBeforeTime(final Set<NamespacedEntityId> namespacedEntityIds, final long timeMillis) {
+  public Set<MetadataRecord> getSnapshotBeforeTime(final Set<NamespacedEntityId> namespacedEntityIds,
+                                                   final long timeMillis) {
     return ImmutableSet.<MetadataRecord>builder()
       .addAll(getSnapshotBeforeTime(MetadataScope.USER, namespacedEntityIds, timeMillis))
       .addAll(getSnapshotBeforeTime(MetadataScope.SYSTEM, namespacedEntityIds, timeMillis))
@@ -455,7 +461,8 @@ public class DefaultMetadataStore implements MetadataStore {
   }
 
   @Override
-  public Set<MetadataRecord> getSnapshotBeforeTime(MetadataScope scope, final Set<NamespacedEntityId> namespacedEntityIds,
+  public Set<MetadataRecord> getSnapshotBeforeTime(MetadataScope scope,
+                                                   final Set<NamespacedEntityId> namespacedEntityIds,
                                                    final long timeMillis) {
     Set<Metadata> metadataHistoryEntries =
       execute(new TransactionExecutor.Function<MetadataDataset, Set<Metadata>>() {

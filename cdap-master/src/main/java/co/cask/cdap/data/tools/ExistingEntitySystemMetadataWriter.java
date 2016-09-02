@@ -106,7 +106,7 @@ public class ExistingEntitySystemMetadataWriter {
                                                    artifactDetail.getMeta().getProperties());
       ArtifactId artifactId = ArtifactId.fromIdParts(
         Arrays.asList(namespace.getNamespace(), artifactDetail.getDescriptor().getArtifactId().getName()));
-      SystemMetadataWriter writer = new ArtifactSystemMetadataWriter(metadataStore, artifactId.toId(), artifactInfo);
+      SystemMetadataWriter writer = new ArtifactSystemMetadataWriter(metadataStore, artifactId, artifactInfo);
       writer.write();
     }
   }
