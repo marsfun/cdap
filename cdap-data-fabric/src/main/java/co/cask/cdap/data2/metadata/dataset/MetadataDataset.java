@@ -372,7 +372,9 @@ public class MetadataDataset extends AbstractDataset {
 
     // call remove metadata for tags which will delete all the existing indexes for tags of this targetId
     removeMetadata(targetId, TAGS_KEY);
-    setTags(targetId, Iterables.toArray(existingTags, String.class));
+    if (!existingTags.isEmpty()) {
+      setTags(targetId, Iterables.toArray(existingTags, String.class));
+    }
   }
 
   /**

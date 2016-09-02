@@ -304,11 +304,14 @@ public class MetadataStoreTest {
                                                                  "multiword", multiWordValue);
     Map<String, String> flowSysProps = ImmutableMap.of("sysKey1", "sysValue1");
     Set<String> flowUserTags = ImmutableSet.of("tag1", "tag2");
+    Set<String> streamUserTags = ImmutableSet.of("tag3", "tag4");
     Set<String> flowSysTags = ImmutableSet.of("sysTag1");
     store.setProperties(MetadataScope.USER, flow1, flowUserProps);
     store.setProperties(MetadataScope.SYSTEM, flow1, flowSysProps);
     store.addTags(MetadataScope.USER, flow1, flowUserTags.toArray(new String[flowUserTags.size()]));
     store.addTags(MetadataScope.SYSTEM, flow1, flowSysTags.toArray(new String[flowSysTags.size()]));
+    store.addTags(MetadataScope.USER, stream1, streamUserTags.toArray(new String[streamUserTags.size()]));
+    store.removeTags(MetadataScope.USER, stream1, streamUserTags.toArray(new String[streamUserTags.size()]));
 
     Map<String, String> streamUserProps = ImmutableMap.of("sKey1", "sValue1 sValue2",
                                                                    "Key1", "Value1");
@@ -337,6 +340,7 @@ public class MetadataStoreTest {
     Assert.assertEquals(expected, actual);
 
     actual = Lists.newArrayList(store.searchMetadata("ns1", "value1 sValue*"));
+    List<MetadataSearchResultRecord> actualSearchAll = Lists.newArrayList(store.searchMetadata("ns1", "*"));
     expected = Lists.newArrayList(
       new MetadataSearchResultRecord(stream1,
                                      expectedStreamMetadata),
@@ -346,6 +350,7 @@ public class MetadataStoreTest {
                                      expectedFlowMetadata)
     );
     Assert.assertEquals(expected, actual);
+    Assert.assertTrue(actualSearchAll.containsAll(expected));
   }
 
   @AfterClass
