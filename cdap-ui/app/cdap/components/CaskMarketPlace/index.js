@@ -27,6 +27,7 @@ export default class CaskMarketPlace extends Component{
     super(props);
     this.state = {
       tabId: 0,
+      tabMode: 'vertical',
       tabs:[
         {
           title: 'All',
@@ -89,7 +90,7 @@ export default class CaskMarketPlace extends Component{
       >
         <ModalHeader className="cask-market-place-header">
           <span className="pull-left">
-            CASK Market Place
+            Cask Market Place
           </span>
           <div className="pull-right">
             <button className="btn btn-sm btn-resource-center">
@@ -98,11 +99,12 @@ export default class CaskMarketPlace extends Component{
           </div>
         </ModalHeader>
         <ModalBody>
-          <Tabs mode="vertical">
+          <Tabs mode={this.state.tabMode}>
             <TabHeaders>
               {this.state.tabs.map((tab, index) => {
                 return(
                   <TabHead
+                    mode={this.state.tabMode}
                     key={index}
                     onClick={() => this.setTab(index)}
                     activeTab={this.isActiveTab(index)}
