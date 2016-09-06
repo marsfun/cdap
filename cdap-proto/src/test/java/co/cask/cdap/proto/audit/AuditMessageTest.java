@@ -27,6 +27,7 @@ import co.cask.cdap.proto.metadata.Metadata;
 import co.cask.cdap.proto.metadata.MetadataScope;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -53,7 +54,7 @@ public class AuditMessageTest {
         "\"user\":\"user1\",\"type\":\"CREATE\",\"payload\":{}}";
     AuditMessage dsCreate = new AuditMessage(1000L, Ids.namespace("ns1").dataset("ds1"), "user1",
                                              AuditType.CREATE, AuditPayload.EMPTY_PAYLOAD);
-    Assert.assertEquals(dsCreateJson, GSON.toJson(dsCreate));
+    Assert.assertEquals(jsonToMap(dsCreateJson), jsonToMap(GSON.toJson(dsCreate)));
     Assert.assertEquals(dsCreate, GSON.fromJson(dsCreateJson, AuditMessage.class));
   }
 
@@ -67,7 +68,8 @@ public class AuditMessageTest {
     AuditMessage flowAccess =
       new AuditMessage(2000L, Ids.namespace("ns1").stream("stream1"), "user1", AuditType.ACCESS,
                        new AccessPayload(AccessType.WRITE, Ids.namespace("ns1").app("app1").flow("flow1").run("run1")));
-    Assert.assertEquals(flowAccessJson, GSON.toJson(flowAccess));
+
+    Assert.assertEquals(jsonToMap(flowAccessJson), jsonToMap(GSON.toJson(flowAccess)));
     Assert.assertEquals(flowAccess, GSON.fromJson(flowAccessJson, AuditMessage.class));
 
     String exploreAccessJson =
@@ -77,7 +79,8 @@ public class AuditMessageTest {
     AuditMessage exploreAccess =
       new AuditMessage(2500L, Ids.namespace("ns1").dataset("ds1"), "user1", AuditType.ACCESS,
                        new AccessPayload(AccessType.UNKNOWN, Ids.systemService("explore")));
-    Assert.assertEquals(exploreAccessJson, GSON.toJson(exploreAccess));
+
+    Assert.assertEquals(jsonToMap(exploreAccessJson), jsonToMap(GSON.toJson(exploreAccess)));
     Assert.assertEquals(exploreAccess, GSON.fromJson(exploreAccessJson, AuditMessage.class));
   }
 
@@ -100,10 +103,10 @@ public class AuditMessageTest {
     userTags.add("ut2");
     Map<MetadataScope, Metadata> previous = new LinkedHashMap<>();
     previous.put(MetadataScope.USER, new Metadata(Collections.unmodifiableMap(userProperties),
-                                                             Collections.unmodifiableSet(userTags)));
+                                                  Collections.unmodifiableSet(userTags)));
     previous.put(MetadataScope.SYSTEM, new Metadata(Collections.unmodifiableMap(systemProperties),
-                                                               Collections.unmodifiableSet(
-                                                                 new LinkedHashSet<String>())));
+                                                    Collections.unmodifiableSet(
+                                                      new LinkedHashSet<String>())));
     Map<String, String> sysPropertiesAdded = new HashMap<>();
     sysPropertiesAdded.put("sk", "sv");
     Set<String> systemTagsAdded = new LinkedHashSet<>();
@@ -111,18 +114,23 @@ public class AuditMessageTest {
     systemTagsAdded.add("t2");
     Map<MetadataScope, Metadata> additions = new HashMap<>();
     additions.put(MetadataScope.SYSTEM, new Metadata(Collections.unmodifiableMap(sysPropertiesAdded),
-                                                                Collections.unmodifiableSet(systemTagsAdded)));
+                                                     Collections.unmodifiableSet(systemTagsAdded)));
     Map<String, String> userPropertiesDeleted = new HashMap<>();
     userPropertiesDeleted.put("uk", "uv");
     Set<String> userTagsDeleted = new LinkedHashSet<>();
     userTagsDeleted.add("ut1");
     Map<MetadataScope, Metadata> deletions = new HashMap<>();
     deletions.put(MetadataScope.USER, new Metadata(Collections.unmodifiableMap(userPropertiesDeleted),
-                                                              Collections.unmodifiableSet(userTagsDeleted)));
+                                                   Collections.unmodifiableSet(userTagsDeleted)));
     AuditMessage metadataChange =
       new AuditMessage(3000L, Ids.namespace("ns1").app("app1"), "user1", AuditType.METADATA_CHANGE,
                        new MetadataPayload(previous, additions, deletions));
-    Assert.assertEquals(metadataJson, GSON.toJson(metadataChange));
+    Assert.assertEquals(jsonToMap(metadataJson), jsonToMap(GSON.toJson(metadataChange)));
     Assert.assertEquals(metadataChange, GSON.fromJson(metadataJson, AuditMessage.class));
   }
+
+  private Map<String, Object> jsonToMap(String json) {
+    return GSON.fromJson(json, new TypeToken<Map<String, Object>>(){}.getType());
+  }
+
 }
