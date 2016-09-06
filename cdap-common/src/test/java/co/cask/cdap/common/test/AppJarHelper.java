@@ -16,6 +16,7 @@
 
 package co.cask.cdap.common.test;
 
+import co.cask.cdap.common.io.Locations;
 import co.cask.cdap.common.lang.ClassLoaders;
 import co.cask.cdap.common.lang.ProgramResources;
 import com.google.common.io.ByteStreams;
@@ -24,14 +25,23 @@ import org.apache.twill.api.ClassAcceptor;
 import org.apache.twill.filesystem.Location;
 import org.apache.twill.filesystem.LocationFactory;
 import org.apache.twill.internal.ApplicationBundler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
@@ -41,8 +51,136 @@ import java.util.jar.Manifest;
  */
 public final class AppJarHelper {
 
-  private AppJarHelper() {
-    // No-op
+  private static final Logger LOG = LoggerFactory.getLogger(AppJarHelper.class);
+
+  private final File cacheDir;
+  private final Map<ClassJarCacheKey, File> jarFileCache;
+
+  public AppJarHelper(File cacheDir) {
+    this.cacheDir = cacheDir;
+    this.jarFileCache = new IdentityHashMap<>();
+  }
+
+  public Location createJar(LocationFactory locationFactory, Class<?> clz, Manifest manifest,
+                            ClassAcceptor classAcceptor, File... embeddedJars) throws IOException {
+    ClassJarCacheKey cacheKey = new ClassJarCacheKey(clz, classAcceptor);
+    File jarFile = jarFileCache.get(cacheKey);
+    if (jarFile == null) {
+      jarFile = createClassJar(clz, classAcceptor);
+      jarFileCache.put(cacheKey, jarFile);
+    }
+
+    Location deployJar = locationFactory.create(clz.getName()).getTempFile(".jar");
+    if (manifest.getMainAttributes().isEmpty() && manifest.getEntries().isEmpty()) {
+      // If the manifest is empty, simply copy/link the file
+      if ("file".equals(deployJar.toURI().getScheme())) {
+        try {
+          // Try to link
+          java.nio.file.Files.createLink(Paths.get(deployJar.toURI()), jarFile.toPath());
+          return deployJar;
+        } catch (Exception e) {
+          // If failed to link, try copying
+          LOG.info("Failed to link file from {} to {}", jarFile, deployJar);
+        }
+      }
+
+      // Copy
+      Files.copy(jarFile, Locations.newOutputSupplier(deployJar));
+      return deployJar;
+    }
+
+    // Manifest is not empty, need to unjar and copy
+    Manifest jarManifest = new Manifest(manifest);
+    jarManifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+    jarManifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS, clz.getName());
+
+    try (
+      JarInputStream jarInput = new JarInputStream(new FileInputStream(jarFile));
+      JarOutputStream jarOutput = new JarOutputStream(deployJar.getOutputStream(), jarManifest)
+    ) {
+      Set<String> seenEntries = new HashSet<>();
+      JarEntry jarEntry = jarInput.getNextJarEntry();
+      while (jarEntry != null) {
+        boolean isDir = jarEntry.isDirectory();
+
+        // Skip the copying of Manifest file
+        if (JarFile.MANIFEST_NAME.equalsIgnoreCase(jarEntry.getName())) {
+          jarEntry = jarInput.getNextJarEntry();
+          continue;
+        }
+
+        jarOutput.putNextEntry(jarEntry);
+        if (!isDir) {
+          ByteStreams.copy(jarInput, jarOutput);
+        }
+
+        jarEntry = jarInput.getNextJarEntry();
+      }
+
+      for (File embeddedJar : embeddedJars) {
+        jarEntry = new JarEntry("lib/" + embeddedJar.getName());
+        if (seenEntries.add(jarEntry.getName())) {
+          jarOutput.putNextEntry(jarEntry);
+          Files.copy(embeddedJar, jarOutput);
+        }
+      }
+    }
+
+    return deployJar;
+  }
+
+  private File createClassJar(Class<?> clz, ClassAcceptor classAcceptor) throws IOException {
+    ApplicationBundler bundler = new ApplicationBundler(classAcceptor);
+    cacheDir.mkdirs();
+
+    Manifest manifest = new Manifest();
+    manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+    manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS, clz.getName());
+
+    File tempFile = File.createTempFile(clz.getName(), ".jar", cacheDir);
+    try {
+      bundler.createBundle(Locations.toLocation(tempFile), clz);
+
+      // Copy the temp file to another jar by removing the "classes/" prefix as that's the convention taken
+      // by the ApplicationBundler inside Twill.
+      File targetFile = File.createTempFile(clz.getName(), ".jar", cacheDir);
+      try (
+        JarInputStream jarInput = new JarInputStream(new FileInputStream(tempFile));
+        JarOutputStream jarOutput = new JarOutputStream(new FileOutputStream(targetFile), manifest)
+      ) {
+        JarEntry jarEntry = jarInput.getNextJarEntry();
+        while (jarEntry != null) {
+          boolean isDir = jarEntry.isDirectory();
+          String entryName = jarEntry.getName();
+          if (!entryName.equals("classes/")) {
+            if (entryName.startsWith("classes/")) {
+              jarEntry = new JarEntry(entryName.substring("classes/".length()));
+            } else {
+              jarEntry = new JarEntry(entryName);
+            }
+
+            // Skip the copying of Manifest file
+            if (JarFile.MANIFEST_NAME.equalsIgnoreCase(jarEntry.getName())) {
+              jarEntry = jarInput.getNextJarEntry();
+              continue;
+            }
+
+            jarOutput.putNextEntry(jarEntry);
+            if (!isDir) {
+              ByteStreams.copy(jarInput, jarOutput);
+            }
+          }
+
+          jarEntry = jarInput.getNextJarEntry();
+        }
+      }
+
+      return targetFile;
+    } finally {
+      if (!tempFile.delete()) {
+        LOG.warn("Failed to delete temp file {}", tempFile);
+      }
+    }
   }
 
   public static Location createDeploymentJar(LocationFactory locationFactory, Class<?> clz, Manifest manifest,
@@ -136,5 +274,35 @@ public final class AppJarHelper {
     // Creates Manifest
     Manifest manifest = new Manifest();
     return createDeploymentJar(locationFactory, clz, manifest, bundleEmbeddedJars);
+  }
+
+  /**
+   * Class to be used as the jar file cache key.
+   */
+  private static final class ClassJarCacheKey {
+    private final Class<?> clz;
+    private final ClassAcceptor classAcceptor;
+
+    private ClassJarCacheKey(Class<?> clz, ClassAcceptor classAcceptor) {
+      this.clz = clz;
+      this.classAcceptor = classAcceptor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      ClassJarCacheKey that = (ClassJarCacheKey) o;
+      return Objects.equals(clz, that.clz) && Objects.equals(classAcceptor, that.classAcceptor);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(clz, classAcceptor);
+    }
   }
 }

@@ -119,6 +119,7 @@ public class UnitTestManager implements TestManager {
   private final ArtifactManagerFactory artifactManagerFactory;
   private final MetricsManager metricsManager;
   private final File tmpDir;
+  private final AppJarHelper appJarHelper;
 
   @Inject
   public UnitTestManager(AppFabricClient appFabricClient,
@@ -147,6 +148,7 @@ public class UnitTestManager implements TestManager {
     this.artifactManagerFactory = artifactManagerFactory;
     this.tmpDir = new File(cConf.get(Constants.CFG_LOCAL_DATA_DIR),
       cConf.get(Constants.AppFabric.TEMP_DIR)).getAbsoluteFile();
+    this.appJarHelper = new AppJarHelper(tmpDir);
   }
 
   /**
@@ -249,7 +251,7 @@ public class UnitTestManager implements TestManager {
   @Override
   public ArtifactManager addAppArtifact(ArtifactId artifactId, Class<?> appClass,
                                         Manifest manifest) throws Exception {
-    Location appJar = AppJarHelper.createDeploymentJar(locationFactory, appClass, manifest, CLASS_ACCEPTOR);
+    Location appJar = appJarHelper.createJar(locationFactory, appClass, manifest, CLASS_ACCEPTOR);
     addArtifact(artifactId, appJar);
     return artifactManagerFactory.create(artifactId);
   }
