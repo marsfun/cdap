@@ -19,8 +19,11 @@ import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.ProgramType;
 import co.cask.cdap.proto.codec.EntityIdTypeAdapter;
 import co.cask.cdap.proto.codec.IdTypeAdapter;
+import co.cask.cdap.proto.codec.NamespacedEntityIdCodec;
+import co.cask.cdap.proto.codec.NamespacedIdCodec;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -228,7 +231,7 @@ public class EntityIdTest {
     }
 
     for (Map.Entry<? extends EntityId, String> toJsonEntry : idsToJson.entrySet()) {
-      Assert.assertEquals(toJsonEntry.getValue(), GSON.toJson(toJsonEntry.getKey()));
+      Assert.assertEquals(jsonToMap(toJsonEntry.getValue()), jsonToMap(GSON.toJson(toJsonEntry.getKey())));
     }
   }
 
@@ -267,6 +270,10 @@ public class EntityIdTest {
     for (EntityId id : ids) {
       System.out.println(id.getEntityType() + ": " + GSON.toJson(id));
     }
+  }
+
+  private Map<String, Object> jsonToMap(String json) {
+    return GSON.fromJson(json, new TypeToken<Map<String, Object>>(){}.getType());
   }
 
 }

@@ -18,6 +18,7 @@ package co.cask.cdap.proto.codec;
 
 import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.ProgramType;
+import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.metadata.MetadataRecord;
 import co.cask.cdap.proto.metadata.MetadataScope;
 import com.google.gson.Gson;
@@ -36,6 +37,7 @@ import java.util.Set;
 public class NamespacedIdCodecTest {
   private static final Gson GSON = new GsonBuilder()
     .registerTypeAdapter(Id.NamespacedId.class, new NamespacedIdCodec())
+    .registerTypeAdapter(NamespacedEntityId.class, new NamespacedEntityIdCodec())
     .create();
 
   private final Id.Namespace ns = Id.Namespace.from("ns");
