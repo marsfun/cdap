@@ -271,7 +271,6 @@ public class EntityIdTest {
   }
 
   private Map<String, Object> jsonToMap(String json) {
-    return GSON.fromJson(json, new TypeToken<Map<String, Object>>(){}.getType());
+    return GSON.fromJson(json, new TypeToken<Map<String, Object>>() { }.getType());
   }
-
 }
