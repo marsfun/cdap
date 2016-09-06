@@ -17,8 +17,13 @@
 package co.cask.cdap.data2.metadata.dataset;
 
 import co.cask.cdap.data2.dataset2.lib.table.MDSKey;
-import co.cask.cdap.proto.Id;
+import co.cask.cdap.proto.id.ApplicationId;
+import co.cask.cdap.proto.id.ArtifactId;
+import co.cask.cdap.proto.id.DatasetId;
 import co.cask.cdap.proto.id.NamespacedEntityId;
+import co.cask.cdap.proto.id.ProgramId;
+import co.cask.cdap.proto.id.StreamId;
+import co.cask.cdap.proto.id.StreamViewId;
 
 import javax.annotation.Nullable;
 
@@ -43,26 +48,26 @@ final class MdsKey {
     keySplitter.skipString();
 
     // Skip targetId
-    if (type.equals(Id.Program.class.getSimpleName())) {
+    if (type.equals(ProgramId.class.getSimpleName())) {
       keySplitter.skipString();
       keySplitter.skipString();
       keySplitter.skipString();
       keySplitter.skipString();
-    } else if (type.equals(Id.Application.class.getSimpleName())) {
+    } else if (type.equals(ApplicationId.class.getSimpleName())) {
       keySplitter.skipString();
       keySplitter.skipString();
-    } else if (type.equals(Id.DatasetInstance.class.getSimpleName())) {
+    } else if (type.equals(DatasetId.class.getSimpleName())) {
       keySplitter.skipString();
       keySplitter.skipString();
-    } else if (type.equals(Id.Stream.class.getSimpleName())) {
+    } else if (type.equals(StreamId.class.getSimpleName())) {
       keySplitter.skipString();
       keySplitter.skipString();
-    } else if (type.equals(Id.Stream.View.class.getSimpleName())) {
+    } else if (type.equals(StreamViewId.class.getSimpleName())) {
       // skip namespace, stream, view
       keySplitter.skipString();
       keySplitter.skipString();
       keySplitter.skipString();
-    } else if (type.equals(Id.Artifact.class.getSimpleName())) {
+    } else if (type.equals(ArtifactId.class.getSimpleName())) {
       // skip namespace, name, version
       keySplitter.skipString();
       keySplitter.skipString();

@@ -31,6 +31,7 @@ import co.cask.cdap.data2.metadata.indexer.DefaultValueIndexer;
 import co.cask.cdap.data2.metadata.indexer.Indexer;
 import co.cask.cdap.data2.metadata.indexer.SchemaIndexer;
 import co.cask.cdap.proto.Id;
+import co.cask.cdap.proto.codec.NamespacedEntityIdCodec;
 import co.cask.cdap.proto.codec.NamespacedIdCodec;
 import co.cask.cdap.proto.id.NamespacedEntityId;
 import co.cask.cdap.proto.metadata.MetadataSearchTargetType;
@@ -68,7 +69,8 @@ import javax.annotation.Nullable;
 public class MetadataDataset extends AbstractDataset {
   private static final Logger LOG = LoggerFactory.getLogger(MetadataDataset.class);
   private static final Gson GSON = new GsonBuilder()
-    .registerTypeAdapter(NamespacedEntityId.class, new NamespacedIdCodec())
+    .registerTypeAdapter(Id.NamespacedId.class, new NamespacedIdCodec())
+    .registerTypeAdapter(NamespacedEntityId.class, new NamespacedEntityIdCodec())
     .create();
 
   private static final Pattern SPACE_SEPARATOR_PATTERN = Pattern.compile("\\s+");

@@ -25,12 +25,12 @@ public enum MetadataSearchTargetType {
   // the custom values are required because these value match the entity-type stored as
   // a part of MDS key.
   ALL("All"),
-  ARTIFACT("Artifact"),
-  APP("Application"),
-  PROGRAM("Program"),
-  DATASET("DatasetInstance"),
-  STREAM("Stream"),
-  VIEW("View");
+  ARTIFACT("ArtifactId"),
+  APP("ApplicationId"),
+  PROGRAM("ProgramId"),
+  DATASET("DatasetId"),
+  STREAM("StreamId"),
+  VIEW("StreamViewId");
 
   private final String serializedForm;
 
