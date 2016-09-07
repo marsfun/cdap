@@ -342,7 +342,6 @@ public class MetadataStoreTest {
     Assert.assertEquals(expected, actual);
 
     actual = Lists.newArrayList(store.searchMetadata("ns1", "value1 sValue*"));
-    List<MetadataSearchResultRecord> actualSearchAll = Lists.newArrayList(store.searchMetadata("ns1", "*"));
     expected = Lists.newArrayList(
       new MetadataSearchResultRecord(stream1,
                                      expectedStreamMetadata),
@@ -352,7 +351,9 @@ public class MetadataStoreTest {
                                      expectedFlowMetadata)
     );
     Assert.assertEquals(expected, actual);
-    Assert.assertTrue(actualSearchAll.containsAll(expected));
+
+    actual = Lists.newArrayList(store.searchMetadata("ns1", "*"));
+    Assert.assertTrue(actual.containsAll(expected));
   }
 
   @AfterClass
