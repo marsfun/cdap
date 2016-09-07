@@ -68,7 +68,7 @@ public final class LineageCollapser {
       for (Relation relation : collapsedEntry.getValue()) {
         accessTypes.add(relation.getAccess());
         runs.add(relation.getRun());
-        components.addAll(relation.getComponents());
+        components.addAll(relation.getIdComponents());
       }
       collapsedRelations.add(toCollapsedRelation(data, program, accessTypes, runs, components));
     }
@@ -76,7 +76,8 @@ public final class LineageCollapser {
   }
 
   private static CollapseKey getCollapseKey(Relation relation, Set<CollapseType> collapseTypes) {
-    CollapseKeyBuilder builder = new CollapseKeyBuilder(relation.getData(), relation.getProgram());
+    CollapseKeyBuilder builder = new CollapseKeyBuilder((Id.NamespacedId) relation.getData().toId(),
+                                                        relation.getProgram().toId());
     if (!collapseTypes.contains(CollapseType.ACCESS)) {
       builder.setAccess(relation.getAccess());
     }
@@ -84,7 +85,7 @@ public final class LineageCollapser {
       builder.setRun(relation.getRun());
     }
     if (!collapseTypes.contains(CollapseType.COMPONENT)) {
-      builder.setComponents(relation.getComponents());
+      builder.setComponents(relation.getIdComponents());
     }
     return builder.build();
   }

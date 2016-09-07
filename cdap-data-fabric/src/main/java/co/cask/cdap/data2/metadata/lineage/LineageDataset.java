@@ -507,18 +507,22 @@ public class LineageDataset extends AbstractDataset {
     LOG.trace("Got component {}", component);
 
     if (stream == null) {
-      return new Relation(datasetInstance,
-                          program,
+      return new Relation(datasetInstance.toEntityId(),
+                          program.toEntityId(),
                           accessType,
                           runId,
-                          component == null ? ImmutableSet.<Id.NamespacedId>of() : ImmutableSet.of(component));
+                          component == null ?
+                            ImmutableSet.<NamespacedEntityId>of() :
+                            ImmutableSet.of((NamespacedEntityId) component.toEntityId()));
     }
 
-    return new Relation(stream,
-                        program,
+    return new Relation(stream.toEntityId(),
+                        program.toEntityId(),
                         accessType,
                         runId,
-                        component == null ? ImmutableSet.<Id.NamespacedId>of() : ImmutableSet.of(component));
+                        component == null ?
+                          ImmutableSet.<NamespacedEntityId>of() :
+                          ImmutableSet.of((NamespacedEntityId) component.toEntityId()));
   }
 
   private static final class RowKey {
