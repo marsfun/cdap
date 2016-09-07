@@ -35,18 +35,21 @@ public final class SystemArguments {
   private static final String MEMORY_KEY = "system.resources.memory";
   private static final String CORES_KEY = "system.resources.cores";
   private static final String LOG_LEVEL = "system.log.level";
+  private static final String LOG_CLASS = "system.log.logger";
 
-  public static void setLogLevel(Arguments args, LogAppenderInitializer initializer) {
-    setLogLevel(args.asMap(), initializer);
+  public static LogAppenderInitializer setLogLevel(Arguments args, LogAppenderInitializer initializer) {
+    return setLogLevel(args.asMap(), initializer);
   }
 
-  public static void setLogLevel(Map<String, String> args, LogAppenderInitializer initializer) {
+  public static LogAppenderInitializer setLogLevel(Map<String, String> args, LogAppenderInitializer initializer) {
     String logLevel = args.get(LOG_LEVEL);
+    String loggerName = args.get(LOG_CLASS);
     if (logLevel != null) {
-      initializer.initialize(logLevel);
+      initializer.initialize(logLevel, loggerName);
     } else {
       initializer.initialize();
     }
+    return initializer;
   }
 
   /**

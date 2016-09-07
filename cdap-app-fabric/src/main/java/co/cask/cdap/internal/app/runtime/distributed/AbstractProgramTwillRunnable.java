@@ -173,7 +173,7 @@ public abstract class AbstractProgramTwillRunnable<T extends ProgramRunner> impl
 
       // Initialize log appender
       logAppenderInitializer = injector.getInstance(LogAppenderInitializer.class);
-      SystemArguments.setLogLevel(programOpts.getUserArguments(), logAppenderInitializer);
+      logAppenderInitializer = SystemArguments.setLogLevel(programOpts.getUserArguments(), logAppenderInitializer);
 
       // Create the ProgramRunner
       programRunner = createProgramRunner(injector);

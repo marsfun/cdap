@@ -127,7 +127,7 @@ public class TestCustomNSLogging {
     namespaceAdmin.create(namespaceMeta);
 
     // publish some logs
-    new LogAppenderInitializer(appender).initialize("TestFileLogging");
+    new LogAppenderInitializer(appender).initialize("TestFileLogging", null, false);
     Logger logger = LoggerFactory.getLogger("TestFileLogging");
     LoggingTester loggingTester = new LoggingTester();
     FlowletLoggingContext loggingContext = new FlowletLoggingContext(namespaceMeta.getNamespaceId().getNamespace(),

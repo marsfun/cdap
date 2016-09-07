@@ -99,15 +99,15 @@ public class TestDistributedLogReader extends KafkaTestBase {
 
     LogAppender fileAppender = injector.getInstance(FileLogAppender.class);
 
-    new LogAppenderInitializer(fileAppender).initialize("TestDistributedLogReader-file");
+    new LogAppenderInitializer(fileAppender).initialize("TestDistributedLogReader-file", null, false);
     Logger fileLogger = LoggerFactory.getLogger("TestDistributedLogReader-file");
     generateLogs(fileLogger, "Log message1", 0, 20);
     fileAppender.stop();
 
     fileAppender = injector.getInstance(FileLogAppender.class);
     LogAppender kafkaAppender = injector.getInstance(KafkaLogAppender.class);
-    new LogAppenderInitializer(fileAppender).initialize("TestDistributedLogReader-both");
-    new LogAppenderInitializer(kafkaAppender).initialize("TestDistributedLogReader-both");
+    new LogAppenderInitializer(fileAppender).initialize("TestDistributedLogReader-both", null, false);
+    new LogAppenderInitializer(kafkaAppender).initialize("TestDistributedLogReader-both", null, false);
     Logger bothLogger = LoggerFactory.getLogger("TestDistributedLogReader-both");
     generateLogs(bothLogger, "Log message1", 20, 10);
     fileAppender.stop();
@@ -116,7 +116,7 @@ public class TestDistributedLogReader extends KafkaTestBase {
     generateCheckpointTime(LOGGING_CONTEXT_BOTH, 30, cConf.get(Constants.Logging.KAFKA_TOPIC));
 
     kafkaAppender = injector.getInstance(KafkaLogAppender.class);
-    new LogAppenderInitializer(kafkaAppender).initialize("TestDistributedLogReader-kafka");
+    new LogAppenderInitializer(kafkaAppender).initialize("TestDistributedLogReader-kafka", null, false);
     Logger kafkaLogger = LoggerFactory.getLogger("TestDistributedLogReader-kafka");
     generateLogs(kafkaLogger, "Log message1", 30, 30);
 
@@ -125,7 +125,7 @@ public class TestDistributedLogReader extends KafkaTestBase {
     // Generate logs for LOGGING_CONTEXT_FILE, logs only in file
     LoggingContextAccessor.setLoggingContext(LOGGING_CONTEXT_FILE);
     fileAppender = injector.getInstance(FileLogAppender.class);
-    new LogAppenderInitializer(fileAppender).initialize("TestDistributedLogReader-file-2");
+    new LogAppenderInitializer(fileAppender).initialize("TestDistributedLogReader-file-2", null, false);
     fileLogger = LoggerFactory.getLogger("TestDistributedLogReader-file-2");
     generateLogs(fileLogger, "Log message2", 0, 40);
     fileAppender.stop();
@@ -135,7 +135,7 @@ public class TestDistributedLogReader extends KafkaTestBase {
     // Generate logs for LOGGING_CONTEXT_KAFKA, logs only in kafka
     LoggingContextAccessor.setLoggingContext(LOGGING_CONTEXT_KAFKA);
     kafkaAppender = injector.getInstance(KafkaLogAppender.class);
-    new LogAppenderInitializer(kafkaAppender).initialize("TestDistributedLogReader-kafka-3");
+    new LogAppenderInitializer(kafkaAppender).initialize("TestDistributedLogReader-kafka-3", null, false);
     kafkaLogger = LoggerFactory.getLogger("TestDistributedLogReader-kafka-3");
     generateLogs(kafkaLogger, "Log message3", 0, 30);
     kafkaAppender.stop();

@@ -247,8 +247,8 @@ public final class SparkRuntimeContextProvider {
    */
   private static final class LogAppenderService extends AbstractService {
 
-    private final LogAppenderInitializer initializer;
     private final ProgramOptions programOptions;
+    private LogAppenderInitializer initializer;
 
     private LogAppenderService(LogAppenderInitializer initializer, ProgramOptions programOptions) {
       this.initializer = initializer;
@@ -258,7 +258,7 @@ public final class SparkRuntimeContextProvider {
     @Override
     protected void doStart() {
       try {
-        SystemArguments.setLogLevel(programOptions.getUserArguments(), initializer);
+        initializer = SystemArguments.setLogLevel(programOptions.getUserArguments(), this.initializer);
         notifyStarted();
       } catch (Throwable t) {
         notifyFailed(t);

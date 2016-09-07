@@ -18,6 +18,7 @@ package co.cask.cdap.internal.app.runtime.batch.distributed;
 
 import co.cask.cdap.api.metrics.MetricsCollectionService;
 import co.cask.cdap.app.guice.DistributedProgramRunnableModule;
+import co.cask.cdap.app.runtime.ProgramOptions;
 import co.cask.cdap.common.conf.CConfiguration;
 import co.cask.cdap.internal.app.runtime.SystemArguments;
 import co.cask.cdap.internal.app.runtime.batch.MapReduceClassLoader;
@@ -46,9 +47,9 @@ public final class DistributedMapReduceTaskContextProvider extends MapReduceTask
   private final ZKClientService zkClientService;
   private final KafkaClientService kafkaClientService;
   private final MetricsCollectionService metricsCollectionService;
-  private final LogAppenderInitializer logAppenderInitializer;
   private final AuthorizationEnforcementService authorizationEnforcementService;
   private final MapReduceContextConfig mapReduceContextConfig;
+  private LogAppenderInitializer logAppenderInitializer;
 
   public DistributedMapReduceTaskContextProvider(CConfiguration cConf, Configuration hConf) {
     super(createInjector(cConf, hConf));
@@ -77,8 +78,8 @@ public final class DistributedMapReduceTaskContextProvider extends MapReduceTask
                                  zkClientService, kafkaClientService, metricsCollectionService,
                                  authorizationEnforcementService);
       }
-      SystemArguments.setLogLevel(mapReduceContextConfig.getProgramOptions().getUserArguments(),
-                                  logAppenderInitializer);
+      ProgramOptions programOptions = mapReduceContextConfig.getProgramOptions();
+      logAppenderInitializer = SystemArguments.setLogLevel(programOptions.getUserArguments(), logAppenderInitializer);
     } catch (Exception e) {
       // Try our best to stop services. Chain stop guarantees it will stop everything, even some of them failed.
       try {

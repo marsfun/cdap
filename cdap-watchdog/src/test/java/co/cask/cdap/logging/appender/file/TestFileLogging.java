@@ -104,7 +104,7 @@ public class TestFileLogging {
     txManager.startAndWait();
 
     LogAppender appender = injector.getInstance(FileLogAppender.class);
-    new LogAppenderInitializer(appender).initialize("TestFileLogging");
+    new LogAppenderInitializer(appender).initialize("TestFileLogging", null, false);
 
     Logger logger = LoggerFactory.getLogger("TestFileLogging");
     LoggingTester loggingTester = new LoggingTester();

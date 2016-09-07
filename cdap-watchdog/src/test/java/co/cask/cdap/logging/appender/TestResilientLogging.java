@@ -138,7 +138,7 @@ public class TestResilientLogging {
     cConf.set(LoggingConfiguration.LOG_BASE_DIR, logBaseDir);
     cConf.setInt(LoggingConfiguration.LOG_MAX_FILE_SIZE_BYTES, 20 * 1024);
     LogAppender appender = new AsyncLogAppender(injector.getInstance(FileLogAppender.class));
-    new LogAppenderInitializer(appender).initialize("TestResilientLogging");
+    new LogAppenderInitializer(appender).initialize("TestResilientLogging", null, false);
 
     Logger logger = LoggerFactory.getLogger("TestResilientLogging");
     for (int i = 0; i < 5; ++i) {

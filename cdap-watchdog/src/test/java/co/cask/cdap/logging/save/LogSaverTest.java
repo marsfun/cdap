@@ -115,7 +115,7 @@ public class LogSaverTest extends KafkaTestBase {
 
     appender = injector.getInstance(KafkaLogAppender.class);
     CountingLogAppender countingLogAppender = new CountingLogAppender(appender);
-    new LogAppenderInitializer(countingLogAppender).initialize("LogSaverTest");
+    new LogAppenderInitializer(countingLogAppender).initialize("LogSaverTest", null, false);
     gson = new GsonBuilder().registerTypeAdapter(Schema.class, new SchemaTypeAdapter()).create();
 
     LogSaverFactory factory = injector.getInstance(LogSaverFactory.class);

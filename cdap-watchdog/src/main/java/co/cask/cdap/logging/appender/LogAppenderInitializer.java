@@ -38,7 +38,6 @@ public class LogAppenderInitializer implements Closeable {
   private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(LogAppenderInitializer.class);
   private static final ConcurrentMap<String, String> initMap = Maps.newConcurrentMap();
   private final LogAppender logAppender;
-  private final String loggerName = org.slf4j.Logger.ROOT_LOGGER_NAME;
 
   @Inject
   public LogAppenderInitializer(LogAppender logAppender) {
@@ -46,20 +45,26 @@ public class LogAppenderInitializer implements Closeable {
   }
 
   public void initialize() {
-    initialize(loggerName, null);
+    initialize(Logger.ROOT_LOGGER_NAME, null, true);
   }
 
-  public void initialize(String logLevel) {
-    if (initMap.putIfAbsent(org.slf4j.Logger.ROOT_LOGGER_NAME, logAppender.getName()) != null) {
+  public void initialize(String logLevel, @Nullable String loggerName) {
+    if (loggerName == null) {
+      initialize(Logger.ROOT_LOGGER_NAME, logLevel, true);
+    } else {
+      initialize(loggerName, logLevel, true);
+    }
+  }
+
+  @VisibleForTesting
+  public void initialize(String loggerName, @Nullable String logLevel, boolean checkInitialized) {
+
+    if (checkInitialized && initMap.putIfAbsent(Logger.ROOT_LOGGER_NAME, logAppender.getName()) != null) {
       // Already initialized.
       LOG.warn("Log appender {} is already initialized.", logAppender.getName());
       return;
     }
-    initialize(loggerName, logLevel);
-  }
 
-  @VisibleForTesting
-  public void initialize(String rootLoggerName, @Nullable String logLevel) {
     ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
     // TODO: fix logging issue in mapreduce:  ENG-3279
     if (!(loggerFactory instanceof LoggerContext)) {
@@ -69,13 +74,14 @@ public class LogAppenderInitializer implements Closeable {
     }
 
     LoggerContext loggerContext = (LoggerContext) loggerFactory;
-    Logger rootLogger = loggerContext.getLogger(rootLoggerName);
+    Logger logger = loggerContext.getLogger(loggerName);
     if (logLevel != null) {
-      rootLogger.setLevel(Level.toLevel(logLevel));
+      LOG.info("Log level of {} changed from {} to {}", loggerName, logger.getLevel(), logLevel);
+      logger.setLevel(Level.toLevel(logLevel));
+
     }
 
     LOG.info("Initializing log appender {}", logAppender.getName());
-
 
     // Display any errors during initialization of log appender to console
     StatusManager statusManager = loggerContext.getStatusManager();
@@ -85,7 +91,7 @@ public class LogAppenderInitializer implements Closeable {
     logAppender.setContext(loggerContext);
     logAppender.start();
 
-    rootLogger.addAppender(logAppender);
+    logger.addAppender(logAppender);
   }
 
   @Override

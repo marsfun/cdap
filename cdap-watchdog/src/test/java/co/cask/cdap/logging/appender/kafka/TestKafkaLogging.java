@@ -51,7 +51,7 @@ public class TestKafkaLogging extends KafkaTestBase {
     txManager.startAndWait();
 
     LogAppender appender = KAFKA_TESTER.getInjector().getInstance(KafkaLogAppender.class);
-    new LogAppenderInitializer(appender).initialize("TestKafkaLogging");
+    new LogAppenderInitializer(appender).initialize("TestKafkaLogging", null, false);
 
     Logger logger = LoggerFactory.getLogger("TestKafkaLogging");
     LoggingTester loggingTester = new LoggingTester();
