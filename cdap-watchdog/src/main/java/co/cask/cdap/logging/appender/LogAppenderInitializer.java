@@ -58,7 +58,6 @@ public class LogAppenderInitializer implements Closeable {
 
   @VisibleForTesting
   public void initialize(String loggerName, @Nullable String logLevel, boolean checkInitialized) {
-
     if (checkInitialized && initMap.putIfAbsent(Logger.ROOT_LOGGER_NAME, logAppender.getName()) != null) {
       // Already initialized.
       LOG.warn("Log appender {} is already initialized.", logAppender.getName());
@@ -78,7 +77,6 @@ public class LogAppenderInitializer implements Closeable {
     if (logLevel != null) {
       LOG.info("Log level of {} changed from {} to {}", loggerName, logger.getLevel(), logLevel);
       logger.setLevel(Level.toLevel(logLevel));
-
     }
 
     LOG.info("Initializing log appender {}", logAppender.getName());
